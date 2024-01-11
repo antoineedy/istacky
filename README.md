@@ -12,23 +12,23 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/github_username/repo_name">
-    <img src="design/logo.png" alt="Logo" width="80" height="80">
+  <a href="https://github.com/antoineedy/istacky">
+    <img src="design/logo.png" alt="Logo" height="100">
   </a>
 
-<h3 align="center">project_title</h3>
+<h3 align="center">IStacky</h3>
 
   <p align="center">
-    project_description
+    A lightweight image processing library
     <br />
-    <a href="https://github.com/github_username/repo_name"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/antoineedy/istacky"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/github_username/repo_name">View Demo</a>
+    <a href="https://github.com/antoineedy/repo_name">View Demo</a>
     ·
-    <a href="https://github.com/github_username/repo_name/issues">Report Bug</a>
+    <a href="https://github.com/gantoineedy/istacky/issues">Report Bug</a>
     ·
-    <a href="https://github.com/github_username/repo_name/issues">Request Feature</a>
+    <a href="https://github.com/antoineedy/istacky/issues">Request Feature</a>
   </p>
 </div>
 
@@ -40,9 +40,6 @@
   <ol>
     <li>
       <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
     </li>
     <li>
       <a href="#getting-started">Getting Started</a>
