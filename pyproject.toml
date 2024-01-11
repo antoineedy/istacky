@@ -3,18 +3,28 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "istack"
+name = "istacky"
 version = "0.1"
 authors = [{ name = "Antoine EDY", email = "antoineedy@outlook.fr" }]
 description = "A lightweight image processing library"
 readme = "README.md"
 requires-python = ">=3.8"
+license = { text = "MIT License" }
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
+keywords = [
+    "image",
+    "image stacking",
+    "photoshop",
+    "image processing",
+    "image editing",
+    "image blending",
+    "image fusion",
+]
 
 [project.urls]
-Homepage = "https://github.com/pypa/sampleproject"
-Issues = "https://github.com/pypa/sampleproject/issues"
+Homepage = "https://github.com/antoineedy/istack"
+Issues = "https://github.com/antoineedy/istack/issues"
