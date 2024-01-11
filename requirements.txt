@@ -1,0 +1,6 @@
+PIL
+numpy
+ipywidgets
+opencv-python
+pandas
+time

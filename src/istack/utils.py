@@ -4,7 +4,6 @@ import ipywidgets as widgets
 import cv2
 import pandas as pd
 import time
-import matplotlib.pyplot as plt
 from copy import deepcopy
 
 from IPython.display import display
