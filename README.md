@@ -24,7 +24,7 @@
     <a href="https://github.com/antoineedy/istacky"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/antoineedy/repo_name">View Demo</a>
+    <a href="https://github.com/antoineedy/istacky">View Demo</a>
     ·
     <a href="https://github.com/gantoineedy/istacky/issues">Report Bug</a>
     ·
@@ -62,9 +62,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
-
-Here's a blank template to get started: To avoid retyping too much info. Do a search and replace with your text editor for the following: `github_username`, `repo_name`, `twitter_handle`, `linkedin_username`, `email_client`, `email`, `project_title`, `project_description`
+[![Product Name Screen Shot][product-screenshot]](https://github.com/antoineedy/istacky/design/screenshot1.png)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -191,4 +189,4 @@ Project Link: [https://github.com/github_username/repo_name](https://github.com/
 [license-url]: https://github.com/github_username/repo_name/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/antoineedy
-[product-screenshot]: images/screenshot.png
+[product-screenshot]: design/screenshot1.png
