@@ -107,7 +107,7 @@ class BlendedImage:
         # remove = [True or False, Color, Threshold]
         self.remove = deepcopy(remove)
         self.to_show = to_show
-        self.background_display_height = 400
+        self.background_display_height = 350
         self.background_display_width = int(
             self.background_display_height
             * (self.background.shape[1] / self.background.shape[0])
@@ -468,9 +468,12 @@ class BlendedImage:
 
         tab_contents = [f"Image {i}" for i in range(len(self.images))]
         children = [widgets.Text(description=name) for name in tab_contents]
+        titles = ["Front image"]
+        titles += [f"Image {i}" for i in range(1, len(self.images) - 1)]
+        titles += ["Back image"]
         tab = widgets.Tab(
             children=children,
-            titles=[str(i) for i in range(len(children))],
+            titles=titles,
         )
         self.__x_slider = [None] * len(children)
         self.__y_slider = [None] * len(children)
@@ -838,7 +841,7 @@ class BlendedImage:
         tab.children = to_display[::-1]
 
         image_display_size = widgets.IntSlider(
-            value=400,
+            value=self.background_display_height,
             min=100,
             max=600,
             step=1,
@@ -884,8 +887,8 @@ class BlendedImage:
         background_part = widgets.HBox(
             [
                 reinit_button,
-                background_crop_right,
                 background_crop_left,
+                background_crop_right,
                 background_crop_top,
                 background_crop_bottom,
             ],

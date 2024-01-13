@@ -62,7 +62,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://github.com/antoineedy/istacky/blob/main/design/screenshot1.png)
+[![Usage of istacky][product-screenshot]](https://github.com/antoineedy/istacky/blob/main/design/screenshot1.png) 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -144,12 +144,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Antoine EDY
-- [LinkedIn](https://www.linkedin.com/in/antoineedy/)
-- [Email](mailto:antoineedy@outlook.fr)
-- [Github](https://github.com/antoineedy)
-
-Project Link: [https://github.com/github_username/repo_name](https://github.com/antoineedy/istacky)
+My name is Antoine EDY. Here is my [LinkedIn](https://www.linkedin.com/in/antoineedy/) and my [Github](https://github.com/antoineedy) profiles, and you can send me an email to [antoineedy@outlook.fr](mailto:antoineedy@outlook.fr).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -168,4 +163,4 @@ Project Link: [https://github.com/github_username/repo_name](https://github.com/
 [license-url]: https://github.com/github_username/repo_name/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/antoineedy
-[product-screenshot]: design/screenshot1.png
+[product-screenshot]: design/gif1.gif
