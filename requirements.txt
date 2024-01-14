@@ -1,7 +1,7 @@
-PIL
+pillow
 numpy
 ipywidgets
 opencv-python
 pandas
-time
 ipyfilechooser
+ipykernel
