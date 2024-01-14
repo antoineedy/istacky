@@ -4,3 +4,4 @@ ipywidgets
 opencv-python
 pandas
 time
+ipyfilechooser

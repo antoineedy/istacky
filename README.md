@@ -1,4 +1,5 @@
 <a name="readme-top"></a>
+<p align="center">
 
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
@@ -7,6 +8,7 @@
 [![MIT License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
+</p>
 
 
 <!-- PROJECT LOGO -->
@@ -62,10 +64,9 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Usage of istacky][product-screenshot]](https://github.com/antoineedy/istacky/blob/main/design/screenshot1.png) 
+[![Usage of istacky][product-screenshot]](https://github.com/antoineedy/istacky/blob/main/design/gif1.gif)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 
 ## Installation
@@ -78,11 +79,11 @@ pip install istacky
 ### using git
 1. Clone the repo
    ```sh
-   git clone https://github.com/antoineedy/stacky.git
+   git clone https://github.com/antoineedy/istacky.git
    ```
 2. Install the package
    ```sh
-    pip install .
+   pip install .
     ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -152,15 +153,15 @@ My name is Antoine EDY. Here is my [LinkedIn](https://www.linkedin.com/in/antoin
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [contributors-shield]: https://img.shields.io/github/contributors/antoineedy/istacky?style=for-the-badge
-[contributors-url]: https://github.com/github_username/repo_name/graphs/contributors
+[contributors-url]: https://github.com/antoineedy/istacky/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/antoineedy/istacky?style=for-the-badge
-[forks-url]: https://github.com/github_username/repo_name/network/members
+[forks-url]: https://github.com/antoineedy/istacky/network/members
 [stars-shield]: https://img.shields.io/github/stars/antoineedy/istacky?style=for-the-badge
-[stars-url]: https://github.com/github_username/repo_name/stargazers
+[stars-url]: https://github.com/antoineedy/istacky/stargazers
 [issues-shield]: https://img.shields.io/github/issues/antoineedy/istacky?style=for-the-badge
-[issues-url]: https://github.com/github_username/repo_name/issues
+[issues-url]: https://github.com/antoineedy/istacky/issues
 [license-shield]: https://img.shields.io/github/license/antoineedy/istacky?style=for-the-badge
-[license-url]: https://github.com/github_username/repo_name/blob/master/LICENSE.txt
+[license-url]: https://github.com/antoineedy/istacky/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/antoineedy
 [product-screenshot]: design/gif1.gif

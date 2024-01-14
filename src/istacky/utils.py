@@ -5,6 +5,8 @@ import cv2
 import pandas as pd
 import time
 from copy import deepcopy
+from ipyfilechooser import FileChooser
+import os
 
 from IPython.display import display
 
@@ -330,7 +332,7 @@ class BlendedImage:
             images[k] = image
 
         # blend the background part and the image
-        for k in range(len(self.images)):
+        for k in range(len(self.images))[::-1]:
             if not self.to_show[k]:
                 continue
             background = self.__blend_arrays(
@@ -468,10 +470,11 @@ class BlendedImage:
 
         tab_contents = [f"Image {i}" for i in range(len(self.images))]
         children = [widgets.Text(description=name) for name in tab_contents]
-        titles = ["Front image"]
-        titles += [f"Image {i}" for i in range(1, len(self.images) - 1)]
-        titles += ["Back image"]
-        tab = widgets.Tab(
+        titles = ["Image 1 (front)"]
+        titles += [f"Image {i+1}" for i in range(1, len(self.images) - 1)]
+        i = len(self.images)
+        titles += [f"Image {i} (back)", "Upload new image"]
+        self.__tab = widgets.Tab(
             children=children,
             titles=titles,
         )
@@ -488,248 +491,251 @@ class BlendedImage:
         self.__image_crop_bottom = [None] * len(children)
         reset_crop_button = [None] * len(children)
 
-        to_display = [None] * len(children)
+        self.__to_display = [None] * len(children)
 
         self.__image_output = widgets.Output()
 
-        for i in range(len(children)):
-            self.__x_slider[i] = widgets.IntSlider(
-                value=self.positions[i][0],
-                min=-self.__image_widths[i],
-                max=self.background_croped.shape[1],
-                step=1,
-                description="x:",
-                disabled=False,
-                continuous_update=True,
-                orientation="horizontal",
-                readout=False,
-                readout_format="d",
-                # add margins
-                layout=widgets.Layout(
-                    width=str(self.background_display_width) + "px",
-                    margin="0px 0px 0px 50px",
-                ),
-            )
-            self.__y_slider[i] = widgets.IntSlider(
-                value=self.background_croped.shape[0]
-                - self.__image_heights[i]
-                - self.positions[i][1],
-                min=-self.__image_heights[i],
-                max=self.background_croped.shape[0],
-                step=1,
-                description="y:",
-                disabled=False,
-                continuous_update=True,
-                orientation="vertical",
-                readout=False,
-                readout_format="d",
-                layout=widgets.Layout(
-                    height=str(self.background_display_height) + "px"
-                ),
-            )
-            to_show[i] = widgets.Checkbox(
-                value=True,
-                description="Show image",
-                disabled=False,
-                indent=True,
-            )
-            opacity_slider[i] = widgets.FloatSlider(
-                value=self.opacities[i],
-                min=0,
-                max=1,
-                step=0.01,
-                description="Opacity",
-                disabled=False,
-                continuous_update=True,
-                orientation="horizontal",
-                readout=True,
-                readout_format=".2f",
-            )
-            image_scale_slider[i] = widgets.FloatSlider(
-                value=self.image_scales[i],
-                min=0.01,
-                max=2,
-                step=0.01,
-                description="Image scale",
-                disabled=False,
-                continuous_update=True,
-                orientation="horizontal",
-                readout=True,
-                readout_format=".2f",
-            )
-            self.__image_crop_right[i] = widgets.BoundedIntText(
-                value=self.images_crop[i][1],
-                min=0,
-                max=self.images[i].shape[1] - 1,
-                step=1,
-                description="",
-                disabled=False,
-                continuous_update=True,
-                style={
-                    "description_width": "initial",
-                },
-                layout=widgets.Layout(width="60px"),
-            )
-            self.__image_crop_right[i].desc = "Crop right"
-            self.__image_crop_left[i] = widgets.BoundedIntText(
-                value=self.images_crop[i][3],
-                min=0,
-                max=self.images[i].shape[1] - 1,
-                step=1,
-                description="",
-                disabled=False,
-                continuous_update=True,
-                style={
-                    "description_width": "initial",
-                },
-                layout=widgets.Layout(width="60px"),
-            )
-            self.__image_crop_left[i].desc = "Crop left"
-            self.__image_crop_top[i] = widgets.BoundedIntText(
-                value=self.images_crop[i][0],
-                min=0,
-                max=100,
-                step=1,
-                description="",
-                disabled=False,
-                continuous_update=True,
-                style={
-                    "description_width": "initial",
-                },
-                layout=widgets.Layout(width="60px"),
-            )
-            self.__image_crop_top[i].desc = "Crop top"
-            self.__image_crop_bottom[i] = widgets.BoundedIntText(
-                value=self.images_crop[i][2],
-                min=0,
-                max=self.images[i].shape[0] - 1,
-                step=1,
-                description="",
-                disabled=False,
-                continuous_update=True,
-                style={
-                    "description_width": "initial",
-                },
-                layout=widgets.Layout(width="60px"),
-            )
-            self.__image_crop_bottom[i].desc = "Crop bottom"
-            reset_crop_button[i] = widgets.Button(
-                description="Reset crop", layout={"width": "100px"}
-            )
-            # checkbox
-            remove_widget_check = widgets.Checkbox(
-                value=deepcopy(self.remove[i][0]),
-                description="Remove color",
-                disabled=False,
-                indent=True,
-            )
-            remove_widget_color = widgets.ColorPicker(
-                concise=True,
-                description="Remove color",
-                # hide description
-                style={"description_width": "0px"},
-                value="#ffffff",
-                disabled=False,
-            )
-            remove_widget_threshold[i] = widgets.IntSlider(
-                value=deepcopy(self.remove[i][2]),
-                min=0,
-                max=100,
-                step=1,
-                description="Color threshold",
-                disabled=False,
-                continuous_update=True,
-                orientation="horizontal",
-                readout=True,
-                readout_format="d",
-                style={
-                    "description_width": "initial",
-                },
-            )
+        def create_widgets():
+            for i in range(len(self.images)):
+                self.__x_slider[i] = widgets.IntSlider(
+                    value=self.positions[i][0],
+                    min=-self.__image_widths[i],
+                    max=self.background_croped.shape[1],
+                    step=1,
+                    description="x:",
+                    disabled=False,
+                    continuous_update=True,
+                    orientation="horizontal",
+                    readout=False,
+                    readout_format="d",
+                    # add margins
+                    layout=widgets.Layout(
+                        width=str(self.background_display_width) + "px",
+                        margin="0px 0px 0px 50px",
+                    ),
+                )
+                self.__y_slider[i] = widgets.IntSlider(
+                    value=self.background_croped.shape[0]
+                    - self.__image_heights[i]
+                    - self.positions[i][1],
+                    min=-self.__image_heights[i],
+                    max=self.background_croped.shape[0],
+                    step=1,
+                    description="y:",
+                    disabled=False,
+                    continuous_update=True,
+                    orientation="vertical",
+                    readout=False,
+                    readout_format="d",
+                    layout=widgets.Layout(
+                        height=str(self.background_display_height) + "px"
+                    ),
+                )
+                to_show[i] = widgets.Checkbox(
+                    value=True,
+                    description="Show image",
+                    disabled=False,
+                    indent=True,
+                )
+                opacity_slider[i] = widgets.FloatSlider(
+                    value=self.opacities[i],
+                    min=0,
+                    max=1,
+                    step=0.01,
+                    description="Opacity",
+                    disabled=False,
+                    continuous_update=True,
+                    orientation="horizontal",
+                    readout=True,
+                    readout_format=".2f",
+                )
+                image_scale_slider[i] = widgets.FloatSlider(
+                    value=self.image_scales[i],
+                    min=0.01,
+                    max=2,
+                    step=0.01,
+                    description="Image scale",
+                    disabled=False,
+                    continuous_update=True,
+                    orientation="horizontal",
+                    readout=True,
+                    readout_format=".2f",
+                )
+                self.__image_crop_right[i] = widgets.BoundedIntText(
+                    value=self.images_crop[i][1],
+                    min=0,
+                    max=self.images[i].shape[1] - 1,
+                    step=1,
+                    description="",
+                    disabled=False,
+                    continuous_update=True,
+                    style={
+                        "description_width": "initial",
+                    },
+                    layout=widgets.Layout(width="60px"),
+                )
+                self.__image_crop_right[i].desc = "Crop right"
+                self.__image_crop_left[i] = widgets.BoundedIntText(
+                    value=self.images_crop[i][3],
+                    min=0,
+                    max=self.images[i].shape[1] - 1,
+                    step=1,
+                    description="",
+                    disabled=False,
+                    continuous_update=True,
+                    style={
+                        "description_width": "initial",
+                    },
+                    layout=widgets.Layout(width="60px"),
+                )
+                self.__image_crop_left[i].desc = "Crop left"
+                self.__image_crop_top[i] = widgets.BoundedIntText(
+                    value=self.images_crop[i][0],
+                    min=0,
+                    max=100,
+                    step=1,
+                    description="",
+                    disabled=False,
+                    continuous_update=True,
+                    style={
+                        "description_width": "initial",
+                    },
+                    layout=widgets.Layout(width="60px"),
+                )
+                self.__image_crop_top[i].desc = "Crop top"
+                self.__image_crop_bottom[i] = widgets.BoundedIntText(
+                    value=self.images_crop[i][2],
+                    min=0,
+                    max=self.images[i].shape[0] - 1,
+                    step=1,
+                    description="",
+                    disabled=False,
+                    continuous_update=True,
+                    style={
+                        "description_width": "initial",
+                    },
+                    layout=widgets.Layout(width="60px"),
+                )
+                self.__image_crop_bottom[i].desc = "Crop bottom"
+                reset_crop_button[i] = widgets.Button(
+                    description="Reset crop", layout={"width": "100px"}
+                )
+                # checkbox
+                remove_widget_check = widgets.Checkbox(
+                    value=deepcopy(self.remove[i][0]),
+                    description="Remove color",
+                    disabled=False,
+                    indent=True,
+                )
+                remove_widget_color = widgets.ColorPicker(
+                    concise=True,
+                    description="Remove color",
+                    # hide description
+                    style={"description_width": "0px"},
+                    value="#ffffff",
+                    disabled=False,
+                )
+                remove_widget_threshold[i] = widgets.IntSlider(
+                    value=deepcopy(self.remove[i][2]),
+                    min=0,
+                    max=100,
+                    step=1,
+                    description="Color threshold",
+                    disabled=False,
+                    continuous_update=True,
+                    orientation="horizontal",
+                    readout=True,
+                    readout_format="d",
+                    style={
+                        "description_width": "initial",
+                    },
+                )
 
-            self.__remove_widget[i] = widgets.HBox(
-                [remove_widget_check, remove_widget_color],
-            )
-            self.__remove_widget[i].description = "Remove color"
+                self.__remove_widget[i] = widgets.HBox(
+                    [remove_widget_check, remove_widget_color],
+                )
+                self.__remove_widget[i].description = "Remove color"
 
-            self.__x_slider[i].rank = i
-            self.__y_slider[i].rank = i
-            opacity_slider[i].rank = i
-            self.__remove_widget[i].rank = i
-            image_scale_slider[i].rank = i
-            to_show[i].rank = i
-            remove_widget_check.rank = i
-            remove_widget_color.rank = i
-            remove_widget_threshold[i].rank = i
+                self.__x_slider[i].rank = i
+                self.__y_slider[i].rank = i
+                opacity_slider[i].rank = i
+                self.__remove_widget[i].rank = i
+                image_scale_slider[i].rank = i
+                to_show[i].rank = i
+                remove_widget_check.rank = i
+                remove_widget_color.rank = i
+                remove_widget_threshold[i].rank = i
 
-            reset_crop_button[i].rank = i
-            self.__image_crop_right[i].rank = i
-            self.__image_crop_left[i].rank = i
-            self.__image_crop_top[i].rank = i
-            self.__image_crop_bottom[i].rank = i
+                reset_crop_button[i].rank = i
+                self.__image_crop_right[i].rank = i
+                self.__image_crop_left[i].rank = i
+                self.__image_crop_top[i].rank = i
+                self.__image_crop_bottom[i].rank = i
 
-            # when slider changes
-            self.__x_slider[i].observe(self.__update_image, names="value")
-            self.__y_slider[i].observe(self.__update_image, names="value")
-            opacity_slider[i].observe(self.__update_image, names="value")
-            self.__remove_widget[i].children[0].observe(
-                self.__update_image, names="value"
-            )
-            self.__remove_widget[i].children[1].observe(
-                self.__update_image, names="value"
-            )
-            image_scale_slider[i].observe(self.__update_image, names="value")
-            to_show[i].observe(self.__update_image, names="value")
-            remove_widget_threshold[i].observe(self.__update_image, names="value")
-            self.__image_crop_top[i].observe(self.__update_image, names="value")
-            self.__image_crop_bottom[i].observe(self.__update_image, names="value")
-            self.__image_crop_left[i].observe(self.__update_image, names="value")
-            self.__image_crop_right[i].observe(self.__update_image, names="value")
+                # when slider changes
+                self.__x_slider[i].observe(self.__update_image, names="value")
+                self.__y_slider[i].observe(self.__update_image, names="value")
+                opacity_slider[i].observe(self.__update_image, names="value")
+                self.__remove_widget[i].children[0].observe(
+                    self.__update_image, names="value"
+                )
+                self.__remove_widget[i].children[1].observe(
+                    self.__update_image, names="value"
+                )
+                image_scale_slider[i].observe(self.__update_image, names="value")
+                to_show[i].observe(self.__update_image, names="value")
+                remove_widget_threshold[i].observe(self.__update_image, names="value")
+                self.__image_crop_top[i].observe(self.__update_image, names="value")
+                self.__image_crop_bottom[i].observe(self.__update_image, names="value")
+                self.__image_crop_left[i].observe(self.__update_image, names="value")
+                self.__image_crop_right[i].observe(self.__update_image, names="value")
 
-            reset_crop_button[i].on_click(self.__update_image)
+                reset_crop_button[i].on_click(self.__update_image)
 
-            top = self.__x_slider[i]
-            left = widgets.HBox([self.__y_slider[i], self.__image_output])
-            crop_part_1 = widgets.HBox(
-                [
-                    self.__image_crop_top[i],
-                ],
-                layout=widgets.Layout(justify_content="center"),
-            )
-            crop_part_2 = widgets.HBox(
-                [
-                    self.__image_crop_left[i],
-                    reset_crop_button[i],
-                    self.__image_crop_right[i],
-                ],
-                layout=widgets.Layout(justify_content="center"),
-            )
-            crop_part_3 = widgets.HBox(
-                [
-                    self.__image_crop_bottom[i],
-                ],
-                layout=widgets.Layout(justify_content="center"),
-            )
-            crop_total = widgets.VBox(
-                [crop_part_1, crop_part_2, crop_part_3],
-                layout=widgets.Layout(justify_content="center", width="100%"),
-            )
-            right = widgets.VBox(
-                [
-                    opacity_slider[i],
-                    self.__remove_widget[i],
-                    remove_widget_threshold[i],
-                    image_scale_slider[i],
-                    crop_total,
-                    to_show[i],
-                ],
-                layout={"justify_content": "space-around", "width": "30%"},
-            )
-            top_and_left = widgets.VBox([top, left])
-            to_display[i] = widgets.HBox(
-                [top_and_left, right],
-                layout={"width": "100%", "justify_content": "space-between"},
-            )
+                top = self.__x_slider[i]
+                left = widgets.HBox([self.__y_slider[i], self.__image_output])
+                crop_part_1 = widgets.HBox(
+                    [
+                        self.__image_crop_top[i],
+                    ],
+                    layout=widgets.Layout(justify_content="center"),
+                )
+                crop_part_2 = widgets.HBox(
+                    [
+                        self.__image_crop_left[i],
+                        reset_crop_button[i],
+                        self.__image_crop_right[i],
+                    ],
+                    layout=widgets.Layout(justify_content="center"),
+                )
+                crop_part_3 = widgets.HBox(
+                    [
+                        self.__image_crop_bottom[i],
+                    ],
+                    layout=widgets.Layout(justify_content="center"),
+                )
+                crop_total = widgets.VBox(
+                    [crop_part_1, crop_part_2, crop_part_3],
+                    layout=widgets.Layout(justify_content="center", width="100%"),
+                )
+                right = widgets.VBox(
+                    [
+                        opacity_slider[i],
+                        self.__remove_widget[i],
+                        remove_widget_threshold[i],
+                        image_scale_slider[i],
+                        crop_total,
+                        to_show[i],
+                    ],
+                    layout={"justify_content": "space-around", "width": "30%"},
+                )
+                top_and_left = widgets.VBox([top, left])
+                self.__to_display[i] = widgets.HBox(
+                    [top_and_left, right],
+                    layout={"width": "100%", "justify_content": "space-between"},
+                )
+
+        create_widgets()
 
         self.__code_widget = widgets.Text(
             value=self.code[:20] + "...",
@@ -757,6 +763,9 @@ class BlendedImage:
         # button to copy code to clipboard
         copy_button = widgets.Button(description="Copy to clipboard")
         copy_button.on_click(to_clipboard)
+
+        upload_new_image = FileChooser()
+        upload_new_image.filter_pattern = ["*.jpg", "*.png", "*.jpeg"]
 
         background_crop_right = widgets.BoundedIntText(
             value=0,
@@ -838,7 +847,82 @@ class BlendedImage:
         # y  |  image  | image scale
         # code | copy button
 
-        tab.children = to_display[::-1]
+        button_validate_upload = widgets.Button(description="Validate", disabled=True)
+
+        part_upload_new_image = widgets.VBox(
+            [
+                upload_new_image,
+                button_validate_upload,
+            ],
+        )
+
+        def upload_image_ftc(change):
+            button_validate_upload.disabled = False
+
+        # Register callback function
+        upload_new_image.register_callback(upload_image_ftc)
+
+        def fct_upload_image(b):
+            new_image = Image.open(upload_new_image.selected)
+            new_image = new_image.convert("RGB")
+            new_image = np.array(new_image)
+
+            self.images.append(new_image)
+            self.positions.append((0, 0))
+            self.opacities.append(1)
+            self.image_scales.append(0.5)
+            self.remove.append([False, [255, 255, 255], 0])
+            self.to_show.append(True)
+            self.images_crop.append([0, 0, 0, 0])
+            self.__image_heights.append(
+                self.image_scales[-1] * self.background_croped.shape[0]
+            )
+            self.__image_widths.append(
+                self.images[-1].shape[1]
+                * (self.__image_heights[-1] / new_image.shape[0])
+            )
+
+            self.__x_slider.append(None)
+            self.__y_slider.append(None)
+            self.__remove_widget.append(None)
+            opacity_slider.append(None)
+            image_scale_slider.append(None)
+            to_show.append(None)
+            remove_widget_threshold.append(None)
+            self.__image_crop_right.append(None)
+            self.__image_crop_left.append(None)
+            self.__image_crop_top.append(None)
+            self.__image_crop_bottom.append(None)
+            reset_crop_button.append(None)
+            self.__to_display.append(None)
+
+            create_widgets()
+            self.__update_code()
+            self.create_image()
+            b = widgets.Button()
+            b.rank = len(self.images) - 1
+            self.__update_image(b)
+
+            tab_contents = [f"Image {i}" for i in range(len(self.images))]
+            children = [widgets.Text(description=name) for name in tab_contents]
+            titles = ["Image 1 (front)"]
+            titles += [f"Image {i+1}" for i in range(1, len(self.images) - 1)]
+            titles += [f"Image {len(self.images)} (back)", "Upload new image"]
+            self.__tab = widgets.Tab(
+                children=children,
+                titles=titles,
+            )
+            self.__tab.children = self.__to_display
+            self.__tab.children = list(self.__tab.children) + [part_upload_new_image]
+            self.__tab.set_title(len(self.__tab.children) - 1, "Upload new image")
+            print(self.__tab.titles)
+            self.__final.children = [self.__tab] + list(self.__final.children)[1:]
+
+        button_validate_upload.on_click(fct_upload_image)
+
+        self.__tab.children = self.__to_display
+        self.__tab.children = list(self.__tab.children) + [part_upload_new_image]
+        self.__tab.set_title(len(self.__tab.children) - 1, "Upload new image")
 
         image_display_size = widgets.IntSlider(
             value=self.background_display_height,
@@ -881,7 +965,10 @@ class BlendedImage:
         image_display_size.observe(update_image_display_size, names="value")
 
         code_part = widgets.HBox(
-            [widgets.HBox([self.__code_widget, copy_button]), image_display_size],
+            [
+                widgets.HBox([self.__code_widget, copy_button]),
+                image_display_size,
+            ],
             layout=widgets.Layout(width="100%", justify_content="space-between"),
         )
         background_part = widgets.HBox(
@@ -897,6 +984,6 @@ class BlendedImage:
             ),
         )
         bottom = widgets.VBox([background_part, code_part])
-        final = widgets.VBox([tab, bottom])
+        self.__final = widgets.VBox([self.__tab, bottom])
 
-        return final
+        display(self.__final)
