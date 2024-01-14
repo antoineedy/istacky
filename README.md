@@ -1,5 +1,4 @@
 <a name="readme-top"></a>
-<p align="center">
 
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
@@ -8,14 +7,13 @@
 [![MIT License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
-</p>
 
 
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
   <a href="https://github.com/antoineedy/istacky">
-    <img src="design/logo.png" alt="Logo" height="100">
+    <img src="design/logo.png" alt="Logo" height="120">
   </a>
 
 <h3 align="center">IStacky</h3>
@@ -43,13 +41,7 @@
     <li>
       <a href="#about-the-project">About The Project</a>
     </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
+    <li><a href="#installation">Installation</a></li>
     <li><a href="#usage">Usage</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
@@ -60,16 +52,14 @@
 </details>
 
 
-
-<!-- ABOUT THE PROJECT -->
-## About The Project
+## :books: About The Project
 
 [![Usage of istacky][product-screenshot]](https://github.com/antoineedy/istacky/blob/main/design/gif1.gif)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-## Installation
+## :technologist: Installation
 
 #### using pip 
 ```sh
@@ -91,32 +81,28 @@ pip install istacky
 
 
 <!-- USAGE EXAMPLES -->
-## Usage
+## :mag_right: Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+__[Click here to access the documentation.](https://example.com)__
+Here is the video tutorial of the library.
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 
 <!-- ROADMAP -->
-## Roadmap
+## :world_map: Future of the project
 
-- [ ] Feature 1
-- [ ] Feature 2
-- [ ] Feature 3
-    - [ ] Nested Feature
-
-See the [open issues](https://github.com/antoineedy/istacky/issues) for a full list of proposed features (and known issues).
+I wonder if I (we?) should extend this project to create a Photoshop-like interface using the ipywidgets library. I really don't know any use to this project. Let me know if you have any ideas! See the [open issues](https://github.com/antoineedy/istacky/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 
 <!-- CONTRIBUTING -->
-## Contributing
+## :family_man_woman_girl_boy: Contributing
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
@@ -134,7 +120,7 @@ Don't forget to give the project a star! Thanks again!
 
 
 <!-- LICENSE -->
-## License
+## :scroll: License
 
 Distributed under the MIT License. See `LICENSE.txt` for more information.
 
@@ -143,7 +129,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 
 <!-- CONTACT -->
-## Contact
+## :dart: Contact
 
 My name is Antoine EDY. Here is my [LinkedIn](https://www.linkedin.com/in/antoineedy/) and my [Github](https://github.com/antoineedy) profiles, and you can send me an email to [antoineedy@outlook.fr](mailto:antoineedy@outlook.fr).
 
