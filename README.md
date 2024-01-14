@@ -1,13 +1,12 @@
 <a name="readme-top"></a>
 
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
+<div align="center">
 
+[![Contributors][contributors-shield]][contributors-url] [![Forks][forks-shield]][forks-url] [![Stargazers][stars-shield]][stars-url] [![Issues][issues-shield]][issues-url] [![MIT License][license-shield]][license-url] [![LinkedIn][linkedin-shield]][linkedin-url]
 
+</div>
+
+---
 
 <!-- PROJECT LOGO -->
 <br />
@@ -32,25 +31,7 @@
   </p>
 </div>
 
-
-
-<!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-    </li>
-    <li><a href="#installation">Installation</a></li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
-  </ol>
-</details>
-
+---
 
 ## :books: About The Project
 
@@ -61,20 +42,18 @@
 
 ## :technologist: Installation
 
-#### using pip 
+__:arrow_heading_down: using pip__
 ```sh
 pip install istacky
 ```
 
-### using git
-1. Clone the repo
-   ```sh
-   git clone https://github.com/antoineedy/istacky.git
-   ```
-2. Install the package
-   ```sh
-   pip install .
-    ```
+__:twisted_rightwards_arrows: by cloning the repo__
+
+```sh
+git clone https://github.com/antoineedy/istacky.git
+cd istacky
+pip install .
+```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
