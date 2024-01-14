@@ -6,8 +6,6 @@
 
 </div>
 
----
-
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
@@ -23,7 +21,7 @@
     <a href="https://github.com/antoineedy/istacky"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/antoineedy/istacky">View Demo</a>
+    <a href="https://github.com/antoineedy/istacky/blob/main/example.ipynb">View Example</a>
     ·
     <a href="https://github.com/gantoineedy/istacky/issues">Report Bug</a>
     ·
@@ -35,7 +33,15 @@
 
 ## :books: About The Project
 
+<div align="center">
+
 [![Usage of istacky][product-screenshot]](https://github.com/antoineedy/istacky/blob/main/design/gif1.gif)
+
+</div>
+
+__IStacky__ is a __lightweight image processing library__ based on the [Ipywidgets](https://github.com/jupyter-widgets/ipywidgets) library and designed to be used in [Jupyter Notebooks](https://jupyter.org/). The main idea is to provide a __simple__ and __intuitive interface__ to __stack images__ and apply number of modifications to them, such as __cropping__, __resizing__ or __background removal__.
+
+This project has been made to be used in the context of __machine learning__ and __computer vision projects__, where the user needs to __quickly__ and __easily__ create output images that combines several images: plots, photos, logos etc.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

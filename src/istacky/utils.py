@@ -108,7 +108,7 @@ class BlendedImage:
         self.image_scales = image_scales
         # remove = [True or False, Color, Threshold]
         self.remove = deepcopy(remove)
-        self.to_show = to_show
+        self.__to_show = to_show
         self.background_display_height = 350
         self.background_display_width = int(
             self.background_display_height
@@ -130,7 +130,6 @@ class BlendedImage:
         self.images_crop = images_crop
         self.__update_background_crop()
 
-        self.__code_widget = None
         self.create_image()
         self.__update_code()
 
@@ -162,14 +161,11 @@ class BlendedImage:
                 + "-"
                 + str(self.remove[k][2])
                 + "-"
-                + str(1 if self.to_show[k] else 0)
+                + str(1 if self.__to_show[k] else 0)
                 + "-"
                 + str(self.images_crop[k])[1:-1].replace(" ", "")
             )
         self.code += "c" + str(self.cropped)[1:-1].replace(" ", "")
-
-        if self.__code_widget is not None:
-            self.__code_widget.value = self.code[:20] + "..."
 
     def __change_image_scale(self, change, k):
         """
@@ -333,7 +329,7 @@ class BlendedImage:
 
         # blend the background part and the image
         for k in range(len(self.images))[::-1]:
-            if not self.to_show[k]:
+            if not self.__to_show[k]:
                 continue
             background = self.__blend_arrays(
                 background,
@@ -361,13 +357,20 @@ class BlendedImage:
         """
         Update the image displayed.
         """
-        isButton = False
+        isResetButton = False
+        isForwardButton = False
+        isBackwardButton = False
         if type(change) == widgets.Button:
             i = change.rank
+            if change.tooltip == "Reset crop":
+                isResetButton = True
+            elif change.description == "Up a layer":
+                isForwardButton = True
+            elif change.description == "Down a layer":
+                isBackwardButton = True
             change = {"owner": widgets.Button(), "new": 0}
             change["owner"].description = "None"
             change["owner"].desc = None
-            isButton = True
         else:
             try:
                 i = change["owner"].rank
@@ -406,7 +409,7 @@ class BlendedImage:
                 - self.positions[i][1]
             )
         elif change["owner"].description == "Show image":
-            self.to_show[i] = change["new"]
+            self.__to_show[i] = change["new"]
         elif change["owner"].description == "Crop/expand right":
             self.cropped[1] = -change["new"]
             self.__update_background_crop()
@@ -451,17 +454,88 @@ class BlendedImage:
             self.images_crop[i][3] = change["new"]
         elif change["owner"].desc == "Crop right":
             self.images_crop[i][1] = change["new"]
-        elif isButton:
+        elif isResetButton:
             self.__image_crop_bottom[i].value = 0
             self.__image_crop_left[i].value = 0
             self.__image_crop_right[i].value = 0
             self.__image_crop_top[i].value = 0
+        elif isBackwardButton:
+            self.__backward_button[i].disabled = True
+            self.images.insert(i + 1, self.images.pop(i))
+            self.positions.insert(i + 1, self.positions.pop(i))
+            self.opacities.insert(i + 1, self.opacities.pop(i))
+            self.image_scales.insert(i + 1, self.image_scales.pop(i))
+            self.remove.insert(i + 1, self.remove.pop(i))
+            self.__to_show.insert(i + 1, self.__to_show.pop(i))
+            self.images_crop.insert(i + 1, self.images_crop.pop(i))
+            self.__image_heights.insert(i + 1, self.__image_heights.pop(i))
+            self.__image_widths.insert(i + 1, self.__image_widths.pop(i))
+            self.__swap_widgets(i, i + 1)
+            self.create_image()
+            self.__update_code()
+            self.__image_output.clear_output(wait=True)
+            with self.__image_output:
+                display(Image.fromarray(self.result_display))
+            self.__tab.selected_index = i + 1
+            self.__backward_button[i].disabled = False
+        elif isForwardButton:
+            self.__forward_button[i].disabled = True
+            self.images.insert(i - 1, self.images.pop(i))
+            self.positions.insert(i - 1, self.positions.pop(i))
+            self.opacities.insert(i - 1, self.opacities.pop(i))
+            self.image_scales.insert(i - 1, self.image_scales.pop(i))
+            self.remove.insert(i - 1, self.remove.pop(i))
+            self.__to_show.insert(i - 1, self.__to_show.pop(i))
+            self.images_crop.insert(i - 1, self.images_crop.pop(i))
+            self.__image_heights.insert(i - 1, self.__image_heights.pop(i))
+            self.__image_widths.insert(i - 1, self.__image_widths.pop(i))
+            self.__swap_widgets(i, i - 1)
+            self.create_image()
+            self.__update_code()
+            self.__image_output.clear_output(wait=True)
+            with self.__image_output:
+                display(Image.fromarray(self.result_display))
+            self.__tab.selected_index = i - 1
+            self.__forward_button[i].disabled = False
 
         self.__update_code()
         self.create_image()
         self.__image_output.clear_output(wait=True)
         with self.__image_output:
             display(Image.fromarray(self.result_display))
+
+    def __swap_widgets(self, i, j):
+        widgets_to_swap = [
+            self.__x_slider,
+            self.__y_slider,
+            self.__remove_widget_check,
+            self.__opacity_slider,
+            self.__image_scale_slider,
+            self.__to_show,
+            self.__remove_widget_threshold,
+            self.__image_crop_right,
+            self.__image_crop_left,
+            self.__image_crop_top,
+            self.__image_crop_bottom,
+            self.__reset_crop_button,
+            self.__forward_button,
+            self.__backward_button,
+        ]
+        to_change = ["value", "max", "min", "disabled"]
+        for widget in widgets_to_swap:
+            the_list = list(vars(widget[0])["_trait_values"]).copy()
+            the_list = [
+                the_list[i] for i in range(len(the_list)) if the_list[i] in to_change
+            ]
+            for attribute in the_list:
+                save_value = getattr(widget[i], attribute)
+                setattr(widget[i], attribute, getattr(widget[j], attribute))
+                setattr(widget[j], attribute, save_value)
+        for k in range(len(self.__forward_button)):
+            self.__forward_button[k].disabled = False
+            self.__backward_button[k].disabled = False
+        self.__forward_button[0].disabled = True
+        self.__backward_button[-1].disabled = True
 
     def editor(self):
         """
@@ -481,15 +555,18 @@ class BlendedImage:
         self.__x_slider = [None] * len(children)
         self.__y_slider = [None] * len(children)
         self.__remove_widget = [None] * len(children)
-        opacity_slider = [None] * len(children)
-        image_scale_slider = [None] * len(children)
-        to_show = [None] * len(children)
-        remove_widget_threshold = [None] * len(children)
+        self.__opacity_slider = [None] * len(children)
+        self.__image_scale_slider = [None] * len(children)
+        self.__to_show = [None] * len(children)
+        self.__remove_widget_threshold = [None] * len(children)
         self.__image_crop_right = [None] * len(children)
         self.__image_crop_left = [None] * len(children)
         self.__image_crop_top = [None] * len(children)
         self.__image_crop_bottom = [None] * len(children)
-        reset_crop_button = [None] * len(children)
+        self.__reset_crop_button = [None] * len(children)
+        self.__forward_button = [None] * len(children)
+        self.__backward_button = [None] * len(children)
+        self.__remove_widget_check = [None] * len(children)
 
         self.__to_display = [None] * len(children)
 
@@ -531,13 +608,13 @@ class BlendedImage:
                         height=str(self.background_display_height) + "px"
                     ),
                 )
-                to_show[i] = widgets.Checkbox(
+                self.__to_show[i] = widgets.Checkbox(
                     value=True,
                     description="Show image",
                     disabled=False,
                     indent=True,
                 )
-                opacity_slider[i] = widgets.FloatSlider(
+                self.__opacity_slider[i] = widgets.FloatSlider(
                     value=self.opacities[i],
                     min=0,
                     max=1,
@@ -549,7 +626,7 @@ class BlendedImage:
                     readout=True,
                     readout_format=".2f",
                 )
-                image_scale_slider[i] = widgets.FloatSlider(
+                self.__image_scale_slider[i] = widgets.FloatSlider(
                     value=self.image_scales[i],
                     min=0.01,
                     max=2,
@@ -617,11 +694,14 @@ class BlendedImage:
                     layout=widgets.Layout(width="60px"),
                 )
                 self.__image_crop_bottom[i].desc = "Crop bottom"
-                reset_crop_button[i] = widgets.Button(
-                    description="Reset crop", layout={"width": "100px"}
+                self.__reset_crop_button[i] = widgets.Button(
+                    description="",
+                    layout={"width": "60px"},
+                    icon="undo",
+                    tooltip="Reset crop",
                 )
                 # checkbox
-                remove_widget_check = widgets.Checkbox(
+                self.__remove_widget_check[i] = widgets.Checkbox(
                     value=deepcopy(self.remove[i][0]),
                     description="Remove color",
                     disabled=False,
@@ -635,7 +715,7 @@ class BlendedImage:
                     value="#ffffff",
                     disabled=False,
                 )
-                remove_widget_threshold[i] = widgets.IntSlider(
+                self.__remove_widget_threshold[i] = widgets.IntSlider(
                     value=deepcopy(self.remove[i][2]),
                     min=0,
                     max=100,
@@ -652,45 +732,67 @@ class BlendedImage:
                 )
 
                 self.__remove_widget[i] = widgets.HBox(
-                    [remove_widget_check, remove_widget_color],
+                    [self.__remove_widget_check[i], remove_widget_color],
                 )
                 self.__remove_widget[i].description = "Remove color"
 
+                self.__forward_button[i] = widgets.Button(
+                    description="Up a layer",
+                    disabled=False,
+                    button_style="",
+                    tooltip="Forward image",
+                    icon="arrow-left",
+                )
+                self.__backward_button[i] = widgets.Button(
+                    description="Down a layer",
+                    disabled=False,
+                    button_style="",
+                    tooltip="Backward image",
+                    icon="arrow-right",
+                )
+
                 self.__x_slider[i].rank = i
                 self.__y_slider[i].rank = i
-                opacity_slider[i].rank = i
+                self.__opacity_slider[i].rank = i
                 self.__remove_widget[i].rank = i
-                image_scale_slider[i].rank = i
-                to_show[i].rank = i
-                remove_widget_check.rank = i
+                self.__image_scale_slider[i].rank = i
+                self.__to_show[i].rank = i
                 remove_widget_color.rank = i
-                remove_widget_threshold[i].rank = i
+                self.__remove_widget_threshold[i].rank = i
 
-                reset_crop_button[i].rank = i
+                self.__reset_crop_button[i].rank = i
                 self.__image_crop_right[i].rank = i
                 self.__image_crop_left[i].rank = i
                 self.__image_crop_top[i].rank = i
                 self.__image_crop_bottom[i].rank = i
+                self.__forward_button[i].rank = i
+                self.__backward_button[i].rank = i
+                self.__remove_widget_check[i].rank = i
 
                 # when slider changes
                 self.__x_slider[i].observe(self.__update_image, names="value")
                 self.__y_slider[i].observe(self.__update_image, names="value")
-                opacity_slider[i].observe(self.__update_image, names="value")
+                self.__opacity_slider[i].observe(self.__update_image, names="value")
                 self.__remove_widget[i].children[0].observe(
                     self.__update_image, names="value"
                 )
                 self.__remove_widget[i].children[1].observe(
                     self.__update_image, names="value"
                 )
-                image_scale_slider[i].observe(self.__update_image, names="value")
-                to_show[i].observe(self.__update_image, names="value")
-                remove_widget_threshold[i].observe(self.__update_image, names="value")
+                self.__image_scale_slider[i].observe(self.__update_image, names="value")
+                self.__to_show[i].observe(self.__update_image, names="value")
+                self.__remove_widget_threshold[i].observe(
+                    self.__update_image, names="value"
+                )
                 self.__image_crop_top[i].observe(self.__update_image, names="value")
                 self.__image_crop_bottom[i].observe(self.__update_image, names="value")
                 self.__image_crop_left[i].observe(self.__update_image, names="value")
                 self.__image_crop_right[i].observe(self.__update_image, names="value")
 
-                reset_crop_button[i].on_click(self.__update_image)
+                self.__reset_crop_button[i].on_click(self.__update_image)
+
+                self.__forward_button[i].on_click(self.__update_image)
+                self.__backward_button[i].on_click(self.__update_image)
 
                 top = self.__x_slider[i]
                 left = widgets.HBox([self.__y_slider[i], self.__image_output])
@@ -703,7 +805,7 @@ class BlendedImage:
                 crop_part_2 = widgets.HBox(
                     [
                         self.__image_crop_left[i],
-                        reset_crop_button[i],
+                        self.__reset_crop_button[i],
                         self.__image_crop_right[i],
                     ],
                     layout=widgets.Layout(justify_content="center"),
@@ -720,12 +822,19 @@ class BlendedImage:
                 )
                 right = widgets.VBox(
                     [
-                        opacity_slider[i],
+                        self.__opacity_slider[i],
                         self.__remove_widget[i],
-                        remove_widget_threshold[i],
-                        image_scale_slider[i],
+                        self.__remove_widget_threshold[i],
+                        self.__image_scale_slider[i],
                         crop_total,
-                        to_show[i],
+                        widgets.HBox(
+                            [
+                                self.__forward_button[i],
+                                self.__backward_button[i],
+                            ],
+                            layout=widgets.Layout(justify_content="center"),
+                        ),
+                        self.__to_show[i],
                     ],
                     layout={"justify_content": "space-around", "width": "30%"},
                 )
@@ -737,12 +846,8 @@ class BlendedImage:
 
         create_widgets()
 
-        self.__code_widget = widgets.Text(
-            value=self.code[:20] + "...",
-            placeholder="",
-            description="Code:",
-            disabled=True,
-        )
+        self.__forward_button[0].disabled = True
+        self.__backward_button[-1].disabled = True
 
         def to_clipboard(b):
             """
@@ -757,11 +862,15 @@ class BlendedImage:
             copy_button.disabled = True
             time.sleep(2)
             copy_button.button_style = ""
-            copy_button.description = "Copy to clipboard"
+            copy_button.description = "Copy code to clipboard"
             copy_button.disabled = False
 
         # button to copy code to clipboard
-        copy_button = widgets.Button(description="Copy to clipboard")
+        copy_button = widgets.Button(
+            description="Copy code to clipboard",
+            icon="clipboard",
+            layout={"width": "180px"},
+        )
         copy_button.on_click(to_clipboard)
 
         upload_new_image = FileChooser()
@@ -778,7 +887,7 @@ class BlendedImage:
             style={
                 "description_width": "initial",
             },
-            layout=widgets.Layout(width="20%"),
+            layout=widgets.Layout(width="18%"),
         )
         background_crop_left = widgets.BoundedIntText(
             value=0,
@@ -791,7 +900,7 @@ class BlendedImage:
             style={
                 "description_width": "initial",
             },
-            layout=widgets.Layout(width="20%"),
+            layout=widgets.Layout(width="18%"),
         )
         background_crop_top = widgets.BoundedIntText(
             value=0,
@@ -804,7 +913,7 @@ class BlendedImage:
             style={
                 "description_width": "initial",
             },
-            layout=widgets.Layout(width="20%"),
+            layout=widgets.Layout(width="18%"),
         )
 
         background_crop_bottom = widgets.BoundedIntText(
@@ -818,7 +927,7 @@ class BlendedImage:
             style={
                 "description_width": "initial",
             },
-            layout=widgets.Layout(width="20%"),
+            layout=widgets.Layout(width="18%"),
         )
 
         def reinit_crop(b):
@@ -830,7 +939,7 @@ class BlendedImage:
             background_crop_top.value = 0
             background_crop_bottom.value = 0
 
-        reinit_button = widgets.Button(description="Reset crop")
+        reinit_button = widgets.Button(description="Reset crop", icon="undo")
         reinit_button.on_click(reinit_crop)
 
         background_crop_right.observe(self.__update_image, names="value")
@@ -872,7 +981,7 @@ class BlendedImage:
             self.opacities.append(1)
             self.image_scales.append(0.5)
             self.remove.append([False, [255, 255, 255], 0])
-            self.to_show.append(True)
+            self.__to_show.append(True)
             self.images_crop.append([0, 0, 0, 0])
             self.__image_heights.append(
                 self.image_scales[-1] * self.background_croped.shape[0]
@@ -885,16 +994,19 @@ class BlendedImage:
             self.__x_slider.append(None)
             self.__y_slider.append(None)
             self.__remove_widget.append(None)
-            opacity_slider.append(None)
-            image_scale_slider.append(None)
-            to_show.append(None)
-            remove_widget_threshold.append(None)
+            self.__opacity_slider.append(None)
+            self.__image_scale_slider.append(None)
+            self.__to_show.append(None)
+            self.__remove_widget_threshold.append(None)
             self.__image_crop_right.append(None)
             self.__image_crop_left.append(None)
             self.__image_crop_top.append(None)
             self.__image_crop_bottom.append(None)
-            reset_crop_button.append(None)
+            self.__reset_crop_button.append(None)
             self.__to_display.append(None)
+            self.__remove_widget_check.append(None)
+            self.__forward_button.append(None)
+            self.__backward_button.append(None)
 
             create_widgets()
             self.__update_code()
@@ -915,8 +1027,13 @@ class BlendedImage:
             self.__tab.children = self.__to_display
             self.__tab.children = list(self.__tab.children) + [part_upload_new_image]
             self.__tab.set_title(len(self.__tab.children) - 1, "Upload new image")
-            print(self.__tab.titles)
             self.__final.children = [self.__tab] + list(self.__final.children)[1:]
+
+            for k in range(len(self.__backward_button)):
+                self.__backward_button[k].disabled = False
+                self.__forward_button[k].disabled = False
+            self.__backward_button[-1].disabled = True
+            self.__forward_button[0].disabled = True
 
         button_validate_upload.on_click(fct_upload_image)
 
@@ -966,7 +1083,7 @@ class BlendedImage:
 
         code_part = widgets.HBox(
             [
-                widgets.HBox([self.__code_widget, copy_button]),
+                copy_button,
                 image_display_size,
             ],
             layout=widgets.Layout(width="100%", justify_content="space-between"),
