@@ -125,6 +125,8 @@ class BlendedImage:
             self.__image_widths.append(height)
             k += 1
 
+        self.__visualize_layer = False
+
         self.cropped = cropped
         self.background_croped = None
         self.images_crop = images_crop
@@ -340,15 +342,57 @@ class BlendedImage:
                 self.images_crop[k],
             )
 
-            # resize the background
-        background_to_display = Image.fromarray(background)
+        background_to_display = background.copy()
+        background_to_display = Image.fromarray(background_to_display)
+        background_to_display = background_to_display.convert("RGBA")
         background_to_display = background_to_display.resize(
             (
                 self.background_display_width,
                 self.background_display_height,
             )
         )
+        background_to_display = background_to_display.convert("RGB")
         background_to_display = np.array(background_to_display)
+
+        # check if exist
+        try:
+            self.__tab
+        except AttributeError:
+            self.__tab = None
+
+        if self.__visualize_layer and self.__tab is not None:
+            k = self.__tab.selected_index
+            # put red rectangle on selected image
+            image_crop = [int(self.images_crop[k][i]) for i in range(4)]
+            # now in pixel (it was in percent):
+            image_crop[0] = image_crop[0] * self.__image_heights[k] / 100
+            image_crop[2] = image_crop[2] * self.__image_heights[k] / 100
+            image_crop[1] = image_crop[1] * self.__image_widths[k] / 100
+            image_crop[3] = image_crop[3] * self.__image_widths[k] / 100
+            rectangle_position = [
+                self.positions[k][0],
+                self.positions[k][1],
+                self.positions[k][0]
+                + self.__image_widths[k]
+                - image_crop[1]
+                - image_crop[3],
+                self.positions[k][1]
+                + self.__image_heights[k]
+                - image_crop[0]
+                - image_crop[2],
+            ]
+            rectangle_position = [
+                int(i * self.background_display_width / self.background.shape[1])
+                for i in rectangle_position
+            ]
+            background_to_display.astype(np.uint8)
+            background_to_display = cv2.rectangle(
+                background_to_display,
+                (rectangle_position[0], rectangle_position[1]),
+                (rectangle_position[2], rectangle_position[3]),
+                (255, 0, 0),
+                3,
+            )
 
         self.result = background
         self.result_display = background_to_display
@@ -552,6 +596,14 @@ class BlendedImage:
             children=children,
             titles=titles,
         )
+
+        def change_of_tab(b):
+            self.create_image()
+            self.__image_output.clear_output(wait=True)
+            with self.__image_output:
+                display(Image.fromarray(self.result_display))
+
+        self.__tab.observe(change_of_tab)
         self.__x_slider = [None] * len(children)
         self.__y_slider = [None] * len(children)
         self.__remove_widget = [None] * len(children)
@@ -1081,9 +1133,33 @@ class BlendedImage:
 
         image_display_size.observe(update_image_display_size, names="value")
 
+        visualize_layer_check = widgets.Checkbox(
+            value=False, description="Visualize the current layer"
+        )
+
+        def change_vis_value(change):
+            """
+            Change the value of __visualize_layer.
+            """
+            if type(change["new"]) != dict:
+                return
+            if len(change["new"]) == 0:
+                return
+            if change["new"]["value"]:
+                self.__visualize_layer = True
+            else:
+                self.__visualize_layer = False
+            self.create_image()
+            self.__image_output.clear_output(wait=True)
+            with self.__image_output:
+                display(Image.fromarray(self.result_display))
+
+        visualize_layer_check.observe(change_vis_value)
+
         code_part = widgets.HBox(
             [
                 copy_button,
+                visualize_layer_check,
                 image_display_size,
             ],
             layout=widgets.Layout(width="100%", justify_content="space-between"),
