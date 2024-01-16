@@ -118,8 +118,8 @@ Now, if we want to apply the same modifications to another image, we can have ac
 ```python
 my_code = blended.get_code()
 ```
+We will use the same background, but different images:
 ```python
-new_background = Image.open("image/background2.png")
 new_img1 = Image.open("image/new_img1.png")
 new_img2 = Image.open("image/new_img2.png")
 new_img3 = Image.open("image/new_img3.png")
@@ -127,7 +127,7 @@ new_img3 = Image.open("image/new_img3.png")
 We specify the code that was used to create the first image, and apply it to the new images:
 ```python
 new_blended = istacky.BlendedImage(
-    background=new_background,
+    background=background,
     images = [new_img1, new_img2, new_img3],
     code=my_code
     )
