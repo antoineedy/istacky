@@ -141,6 +141,12 @@ class BlendedImage:
         """
         display(Image.fromarray(self.result))
 
+    def get_code(self):
+        """
+        Get the code to reproduce the blended image.
+        """
+        return self.code
+
     def __update_code(self):
         """
         Update the code.

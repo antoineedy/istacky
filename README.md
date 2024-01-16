@@ -48,17 +48,20 @@ This project has been made to be used in the context of __machine learning__ and
 
 ## :technologist: Installation
 
-__:arrow_heading_down: using pip__
+__:arrow_heading_down: (coming soon) using pip__
 ```sh
-pip install istacky
+pip install istacky # not working yet!
 ```
 
-__:twisted_rightwards_arrows: by cloning the repo__
+__:twisted_rightwards_arrows: install and run from source code__
 
+Clone the repo, create a virtual environment and install using pip:
 ```sh
 git clone https://github.com/antoineedy/istacky.git
 cd istacky
-pip install .
+python3 -m venv .
+source bin/activate
+pip install -e .
 ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -68,9 +71,72 @@ pip install .
 <!-- USAGE EXAMPLES -->
 ## :mag_right: Usage
 
+Istacky is meant to be used in Jupyter Notebooks.
 
-__[Click here to access the documentation.](https://example.com)__
-Here is the video tutorial of the library.
+#### :video_camera: Tutorial (coming soon)
+
+#### :notebook: Example
+
+_Have a look at the [example notebook](https://github.com/antoineedy/istacky/blob/main/example.ipynb) for a complete example._
+
+Import the libraries needed:
+```python
+from PIL import Image
+import istacky
+```
+
+Load the images we want to stack:
+```python
+background = Image.open("image/background.png")
+img1 = Image.open("image/img1.png")
+img2 = Image.open("image/img2.png")
+```
+
+Create a `BlendedImage` object and display it:
+```python
+blended = istacky.BlendedImage(background, [img1, img2])
+blended.show()
+```
+![First output](design/output_bad.png "Title")
+
+The images are just stacked on top of each other! Let's apply some modifications to them:
+```python
+blended.editor()
+```
+![Editor](design/editor.png "Title")
+
+Calling editor displays a widget that allows you to apply modifications to the images. You can crop, resize, change the opacity, remove the background, add images, change the orders of the layers etc. 
+
+In our case, we want to put the logo in one corner, circle the pisition of the ball and add a plot of the trajectory of the ball. After the changes, here is the final result:
+
+```python
+blended.show()
+```
+![Final output](design/output_good.png "Title")
+
+Now, if we want to apply the same modifications to another image, we can have access to the code that was used to create the final image, and apply it to another one:
+```python
+my_code = blended.get_code()
+```
+```python
+new_background = Image.open("image/background2.png")
+new_img1 = Image.open("image/new_img1.png")
+new_img2 = Image.open("image/new_img2.png")
+new_img3 = Image.open("image/new_img3.png")
+``` 
+We specify the code that was used to create the first image, and apply it to the new images:
+```python
+new_blended = istacky.BlendedImage(
+    background=new_background,
+    images = [new_img1, new_img2, new_img3],
+    code=my_code
+    )
+    
+new_blended.show()
+```
+![Final output](design/output_good2.png "Title")
+
+We can see that the modifications have been applied to the new images!
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
