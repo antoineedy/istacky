@@ -24,6 +24,19 @@ keywords = [
     "image blending",
     "image fusion",
 ]
+dependencies = [
+    "pillow",
+    "numpy",
+    "ipywidgets",
+    "opencv-python",
+    "pandas",
+    "ipyfilechooser",
+    "ipykernel",
+    "nbconvert",
+    "ipython",
+    "nbclient",
+    "notebook",
+]
 
 [project.urls]
 Homepage = "https://github.com/antoineedy/istack"
