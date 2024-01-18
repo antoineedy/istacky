@@ -36,6 +36,7 @@ dependencies = [
     "ipython",
     "nbclient",
     "notebook",
+    "mkdocstrings-python",
 ]
 
 [project.urls]

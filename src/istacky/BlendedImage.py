@@ -1,3 +1,5 @@
+# Do the necessary imports
+
 from PIL import Image, ImageColor
 import numpy as np
 import ipywidgets as widgets
@@ -6,15 +8,15 @@ import pandas as pd
 import time
 from copy import deepcopy
 from ipyfilechooser import FileChooser
-import os
-
 from IPython.display import display
+
+# Create the class
 
 
 class BlendedImage:
     def __init__(
         self,
-        background,
+        background: Image.Image or np.array,
         images,
         positions=None,
         opacities=None,
@@ -25,6 +27,32 @@ class BlendedImage:
         images_crop=None,
         code=None,
     ):
+        """
+        Blend images on a background.
+
+        Parameters
+        ----------
+        background : PIL.Image.Image or numpy.ndarray
+            Background image.
+        images : PIL.Image.Image or numpy.ndarray or list
+            Image to superpose.
+        positions : tuple or list or None
+            Position of the image on the background.
+        opacities : float or list or None
+            Opacity of the image.
+        background_resize : float
+            Coefficient to resize the background.
+        image_scales : float or list or None
+            Height of the images in percentage of the background height.
+        remove : list or None
+            Remove specific color from the image.
+        cropped : list or None
+            Crop or expand the background.
+        images_crop : list or None
+            Crop the images.
+        code : str or None
+            Code to reproduce a previously created blended image.
+        """
         if not isinstance(images, list):
             images = [images]
 
@@ -82,14 +110,16 @@ class BlendedImage:
                     [int(the_cropping[i]) for i in range(len(the_cropping))]
                 )
 
-        self.background = background
-        self.images = images
+        self.__background = background
+        self.__images = images
 
         if isinstance(background, Image.Image):
             background = background.convert("RGB")
-            self.background = np.array(background)
+            self.__background = np.array(background)
         elif not isinstance(background, np.array):
-            raise TypeError("self.background must be PIL.Image.Image or numpy.ndarray")
+            raise TypeError(
+                "self.__background must be PIL.Image.Image or numpy.ndarray"
+            )
 
         stored_images = []
 
@@ -100,89 +130,122 @@ class BlendedImage:
             elif not isinstance(image, np.array):
                 raise TypeError("image must be PIL.Image.Image or numpy.ndarray")
 
-        self.images = stored_images
+        self.__images = stored_images
 
-        self.positions = positions
-        self.opacities = opacities
-        self.background_resize = background_resize
-        self.image_scales = image_scales
+        self.__positions = positions
+        self.__opacities = opacities
+        self.__background_resize = background_resize
+        self.__image_scales = image_scales
         # remove = [True or False, Color, Threshold]
-        self.remove = deepcopy(remove)
+        self.__remove = deepcopy(remove)
         self.__to_show = to_show
-        self.background_display_height = 350
-        self.background_display_width = int(
-            self.background_display_height
-            * (self.background.shape[1] / self.background.shape[0])
+        self.__background_display_height = 350
+        self.__background_display_width = int(
+            self.__background_display_height
+            * (self.__background.shape[1] / self.__background.shape[0])
         )
 
         self.__image_heights = list(
-            np.array(self.image_scales) * self.background.shape[0]
+            np.array(self.__image_scales) * self.__background.shape[0]
         )
         self.__image_widths = []
         k = 0
-        for image in self.images:
+        for image in self.__images:
             height = image.shape[1] * (self.__image_heights[k] / image.shape[0])
             self.__image_widths.append(height)
             k += 1
 
         self.__visualize_layer = False
 
-        self.cropped = cropped
-        self.background_croped = None
-        self.images_crop = images_crop
+        self.__cropped = cropped
+        self.__background_croped = None
+        self.__images_crop = images_crop
         self.__update_background_crop()
 
-        self.create_image()
+        self.__create_image()
         self.__update_code()
 
     def show(self):
         """
-        Show the blended image.
+        Show the blended image in a Jupyter Notebook.
+
+        Returns
+        -------
+            None
         """
-        display(Image.fromarray(self.result))
+        display(Image.fromarray(self.__result))
 
     def get_code(self):
         """
         Get the code to reproduce the blended image.
+
+        Returns
+        -------
+        str
+            Code to reproduce the blended image.
         """
-        return self.code
+        return self.__code
+
+    def to_image(self):
+        """
+        Return the blended image as a PIL.Image.Image.
+
+        Returns
+        -------
+        PIL.Image.Image
+            Blended image.
+        """
+        return Image.fromarray(self.__result)
+
+    def to_array(self):
+        """
+        Return the blended image as a numpy.ndarray.
+
+        Returns
+        -------
+        numpy.ndarray
+            Blended image.
+        """
+        return self.__result
 
     def __update_code(self):
         """
         Update the code.
         """
-        self.code = ""
-        for k in range(len(self.images)):
-            self.code += (
+        self.__code = ""
+        for k in range(len(self.__images)):
+            self.__code += (
                 "#"
-                + str(round(self.image_scales[k], 4))
+                + str(round(self.__image_scales[k], 4))
                 + "-"
-                + str(int(self.positions[k][0]))
+                + str(int(self.__positions[k][0]))
                 + "-"
-                + str(int(self.positions[k][1]))
+                + str(int(self.__positions[k][1]))
                 + "-"
-                + str(round(self.opacities[k], 4))
+                + str(round(self.__opacities[k], 4))
                 + "-"
-                + str(1 if self.remove[k][0] else 0)
+                + str(1 if self.__remove[k][0] else 0)
                 + "-"
-                + str(self.remove[k][1])[1:-1].replace(" ", "")
+                + str(self.__remove[k][1])[1:-1].replace(" ", "")
                 + "-"
-                + str(self.remove[k][2])
+                + str(self.__remove[k][2])
                 + "-"
                 + str(1 if self.__to_show[k] else 0)
                 + "-"
-                + str(self.images_crop[k])[1:-1].replace(" ", "")
+                + str(self.__images_crop[k])[1:-1].replace(" ", "")
             )
-        self.code += "c" + str(self.cropped)[1:-1].replace(" ", "")
+        self.__code += "c" + str(self.__cropped)[1:-1].replace(" ", "")
 
     def __change_image_scale(self, change, k):
         """
         Change the image scale.
         """
-        self.image_scales[k] = change
-        self.__image_heights[k] = self.image_scales[k] * self.background_croped.shape[0]
-        self.__image_widths[k] = self.images[k].shape[1] * (
-            self.__image_heights[k] / self.images[k].shape[0]
+        self.__image_scales[k] = change
+        self.__image_heights[k] = (
+            self.__image_scales[k] * self.__background_croped.shape[0]
+        )
+        self.__image_widths[k] = self.__images[k].shape[1] * (
+            self.__image_heights[k] / self.__images[k].shape[0]
         )
         self.__update_code()
 
@@ -275,19 +338,19 @@ class BlendedImage:
         """
         Update the background crop.
         """
-        the_back = self.background.copy()
+        the_back = self.__background.copy()
         the_back = Image.fromarray(the_back)
         the_back = the_back.crop(
             (
-                self.cropped[3],
-                self.cropped[0],
-                the_back.width - self.cropped[1],
-                the_back.height - self.cropped[2],
+                self.__cropped[3],
+                self.__cropped[0],
+                the_back.width - self.__cropped[1],
+                the_back.height - self.__cropped[2],
             )
         )
-        self.background_croped = np.array(the_back)
+        self.__background_croped = np.array(the_back)
 
-    def create_image(self):
+    def __create_image(self):
         """
         Superpose image on background at position with opacity.
 
@@ -312,40 +375,40 @@ class BlendedImage:
             Superposed image.
         """
 
-        background = self.background_croped.copy()
-        images = self.images.copy()
+        background = self.__background_croped.copy()
+        images = self.__images.copy()
 
-        # resize self.background_croped
-        if self.background_resize is not None:
+        # resize self.__background_croped
+        if self.__background_resize is not None:
             background = Image.fromarray(background)
             background = background.resize(
                 (
-                    int(background.width * self.background_resize),
-                    int(background.height * self.background_resize),
+                    int(background.width * self.__background_resize),
+                    int(background.height * self.__background_resize),
                 )
             )
-            background = np.array(self.background_croped)
+            background = np.array(self.__background_croped)
 
         for k in range(len(images)):
             image = images[k]
             image = Image.fromarray(image)
-            new_height = background.shape[0] * self.image_scales[k]
+            new_height = background.shape[0] * self.__image_scales[k]
             new_width = image.width * (new_height / image.height)
             image = image.resize((int(new_width), int(new_height)))
             image = np.array(image)
             images[k] = image
 
         # blend the background part and the image
-        for k in range(len(self.images))[::-1]:
+        for k in range(len(self.__images))[::-1]:
             if not self.__to_show[k]:
                 continue
             background = self.__blend_arrays(
                 background,
                 images[k],
-                self.opacities[k],
-                self.remove[k],
-                self.positions[k],
-                self.images_crop[k],
+                self.__opacities[k],
+                self.__remove[k],
+                self.__positions[k],
+                self.__images_crop[k],
             )
 
         background_to_display = background.copy()
@@ -353,8 +416,8 @@ class BlendedImage:
         background_to_display = background_to_display.convert("RGBA")
         background_to_display = background_to_display.resize(
             (
-                self.background_display_width,
-                self.background_display_height,
+                self.__background_display_width,
+                self.__background_display_height,
             )
         )
         background_to_display = background_to_display.convert("RGB")
@@ -369,26 +432,26 @@ class BlendedImage:
         if self.__visualize_layer and self.__tab is not None:
             k = self.__tab.selected_index
             # put red rectangle on selected image
-            image_crop = [int(self.images_crop[k][i]) for i in range(4)]
+            image_crop = [int(self.__images_crop[k][i]) for i in range(4)]
             # now in pixel (it was in percent):
             image_crop[0] = image_crop[0] * self.__image_heights[k] / 100
             image_crop[2] = image_crop[2] * self.__image_heights[k] / 100
             image_crop[1] = image_crop[1] * self.__image_widths[k] / 100
             image_crop[3] = image_crop[3] * self.__image_widths[k] / 100
             rectangle_position = [
-                self.positions[k][0],
-                self.positions[k][1],
-                self.positions[k][0]
+                self.__positions[k][0],
+                self.__positions[k][1],
+                self.__positions[k][0]
                 + self.__image_widths[k]
                 - image_crop[1]
                 - image_crop[3],
-                self.positions[k][1]
+                self.__positions[k][1]
                 + self.__image_heights[k]
                 - image_crop[0]
                 - image_crop[2],
             ]
             rectangle_position = [
-                int(i * self.background_display_width / self.background.shape[1])
+                int(i * self.__background_display_width / self.__background.shape[1])
                 for i in rectangle_position
             ]
             background_to_display.astype(np.uint8)
@@ -400,8 +463,8 @@ class BlendedImage:
                 3,
             )
 
-        self.result = background
-        self.result_display = background_to_display
+        self.__result = background
+        self.__result_display = background_to_display
 
     def __update_image(self, change):
         """
@@ -428,82 +491,94 @@ class BlendedImage:
                 i = None
 
         if change["owner"].description == "x:":
-            self.positions[i] = (change["new"], self.positions[i][1])
+            self.__positions[i] = (change["new"], self.__positions[i][1])
         elif change["owner"].description == "y:":
             new_y = int(
-                self.background_croped.shape[0]
+                self.__background_croped.shape[0]
                 - self.__image_heights[i]
                 - change["new"]
             )
-            self.positions[i] = (self.positions[i][0], new_y)
+            self.__positions[i] = (self.__positions[i][0], new_y)
         elif change["owner"].description == "Opacity":
-            self.opacities[i] = change["new"]
+            self.__opacities[i] = change["new"]
         elif change["owner"].description == "Remove color":
             new_color = ImageColor.getcolor(
                 self.__remove_widget[i].children[1].value, "RGB"
             )
-            self.remove[i][1] = list(new_color)
+            self.__remove[i][1] = list(new_color)
             if self.__remove_widget[i].children[0].value:
-                self.remove[i][0] = True
+                self.__remove[i][0] = True
             else:
-                self.remove[i][0] = False
+                self.__remove[i][0] = False
         elif change["owner"].description == "Color threshold":
-            self.remove[i][2] = change["new"]
+            self.__remove[i][2] = change["new"]
         elif change["owner"].description == "Image scale":
             self.__change_image_scale(change["new"], i)
             self.__x_slider[i].min = -self.__image_widths[i]
             self.__y_slider[i].min = -self.__image_heights[i]
             self.__y_slider[i].value = (
-                self.background_croped.shape[0]
+                self.__background_croped.shape[0]
                 - self.__image_heights[i]
-                - self.positions[i][1]
+                - self.__positions[i][1]
             )
         elif change["owner"].description == "Show image":
             self.__to_show[i] = change["new"]
         elif change["owner"].description == "Crop/expand right":
-            self.cropped[1] = -change["new"]
+            self.__cropped[1] = -change["new"]
             self.__update_background_crop()
-            self.background_display_width = int(
-                self.background_display_height
-                * (self.background_croped.shape[1] / self.background_croped.shape[0])
+            self.__background_display_width = int(
+                self.__background_display_height
+                * (
+                    self.__background_croped.shape[1]
+                    / self.__background_croped.shape[0]
+                )
             )
-            for k in range(len(self.images)):
-                self.__x_slider[k].max = self.background_croped.shape[1]
+            for k in range(len(self.__images)):
+                self.__x_slider[k].max = self.__background_croped.shape[1]
         elif change["owner"].description == "Crop/expand left":
-            self.cropped[3] = -change["new"]
+            self.__cropped[3] = -change["new"]
             self.__update_background_crop()
-            self.background_display_width = int(
-                self.background_display_height
-                * (self.background_croped.shape[1] / self.background_croped.shape[0])
+            self.__background_display_width = int(
+                self.__background_display_height
+                * (
+                    self.__background_croped.shape[1]
+                    / self.__background_croped.shape[0]
+                )
             )
-            for k in range(len(self.images)):
-                self.__x_slider[k].max = self.background_croped.shape[1]
+            for k in range(len(self.__images)):
+                self.__x_slider[k].max = self.__background_croped.shape[1]
         elif change["owner"].description == "Crop/expand top":
-            self.cropped[0] = -change["new"]
+            self.__cropped[0] = -change["new"]
             self.__update_background_crop()
-            self.background_display_height = int(
-                self.background_display_width
-                * (self.background_croped.shape[0] / self.background_croped.shape[1])
+            self.__background_display_height = int(
+                self.__background_display_width
+                * (
+                    self.__background_croped.shape[0]
+                    / self.__background_croped.shape[1]
+                )
             )
-            for k in range(len(self.images)):
-                self.__y_slider[k].max = self.background_croped.shape[0]
+            for k in range(len(self.__images)):
+                self.__y_slider[k].max = self.__background_croped.shape[0]
         elif change["owner"].description == "Crop/expand bottom":
-            self.cropped[2] = -change["new"]
+            self.__cropped[2] = -change["new"]
             self.__update_background_crop()
-            self.background_display_height = int(
-                self.background_display_width
-                * (self.background_croped.shape[0] / self.background_croped.shape[1])
+            self.__background_display_height = int(
+                self.__background_display_width
+                * (
+                    self.__background_croped.shape[0]
+                    / self.__background_croped.shape[1]
+                )
             )
-            for k in range(len(self.images)):
-                self.__y_slider[k].max = self.background_croped.shape[0]
+            for k in range(len(self.__images)):
+                self.__y_slider[k].max = self.__background_croped.shape[0]
         elif change["owner"].desc == "Crop top":
-            self.images_crop[i][0] = change["new"]
+            self.__images_crop[i][0] = change["new"]
         elif change["owner"].desc == "Crop bottom":
-            self.images_crop[i][2] = change["new"]
+            self.__images_crop[i][2] = change["new"]
         elif change["owner"].desc == "Crop left":
-            self.images_crop[i][3] = change["new"]
+            self.__images_crop[i][3] = change["new"]
         elif change["owner"].desc == "Crop right":
-            self.images_crop[i][1] = change["new"]
+            self.__images_crop[i][1] = change["new"]
         elif isResetButton:
             self.__image_crop_bottom[i].value = 0
             self.__image_crop_left[i].value = 0
@@ -511,48 +586,48 @@ class BlendedImage:
             self.__image_crop_top[i].value = 0
         elif isBackwardButton:
             self.__backward_button[i].disabled = True
-            self.images.insert(i + 1, self.images.pop(i))
-            self.positions.insert(i + 1, self.positions.pop(i))
-            self.opacities.insert(i + 1, self.opacities.pop(i))
-            self.image_scales.insert(i + 1, self.image_scales.pop(i))
-            self.remove.insert(i + 1, self.remove.pop(i))
+            self.__images.insert(i + 1, self.__images.pop(i))
+            self.__positions.insert(i + 1, self.__positions.pop(i))
+            self.__opacities.insert(i + 1, self.__opacities.pop(i))
+            self.__image_scales.insert(i + 1, self.__image_scales.pop(i))
+            self.__remove.insert(i + 1, self.__remove.pop(i))
             self.__to_show.insert(i + 1, self.__to_show.pop(i))
-            self.images_crop.insert(i + 1, self.images_crop.pop(i))
+            self.__images_crop.insert(i + 1, self.__images_crop.pop(i))
             self.__image_heights.insert(i + 1, self.__image_heights.pop(i))
             self.__image_widths.insert(i + 1, self.__image_widths.pop(i))
             self.__swap_widgets(i, i + 1)
-            self.create_image()
+            self.__create_image()
             self.__update_code()
             self.__image_output.clear_output(wait=True)
             with self.__image_output:
-                display(Image.fromarray(self.result_display))
+                display(Image.fromarray(self.__result_display))
             self.__tab.selected_index = i + 1
             self.__backward_button[i].disabled = False
         elif isForwardButton:
             self.__forward_button[i].disabled = True
-            self.images.insert(i - 1, self.images.pop(i))
-            self.positions.insert(i - 1, self.positions.pop(i))
-            self.opacities.insert(i - 1, self.opacities.pop(i))
-            self.image_scales.insert(i - 1, self.image_scales.pop(i))
-            self.remove.insert(i - 1, self.remove.pop(i))
+            self.__images.insert(i - 1, self.__images.pop(i))
+            self.__positions.insert(i - 1, self.__positions.pop(i))
+            self.__opacities.insert(i - 1, self.__opacities.pop(i))
+            self.__image_scales.insert(i - 1, self.__image_scales.pop(i))
+            self.__remove.insert(i - 1, self.__remove.pop(i))
             self.__to_show.insert(i - 1, self.__to_show.pop(i))
-            self.images_crop.insert(i - 1, self.images_crop.pop(i))
+            self.__images_crop.insert(i - 1, self.__images_crop.pop(i))
             self.__image_heights.insert(i - 1, self.__image_heights.pop(i))
             self.__image_widths.insert(i - 1, self.__image_widths.pop(i))
             self.__swap_widgets(i, i - 1)
-            self.create_image()
+            self.__create_image()
             self.__update_code()
             self.__image_output.clear_output(wait=True)
             with self.__image_output:
-                display(Image.fromarray(self.result_display))
+                display(Image.fromarray(self.__result_display))
             self.__tab.selected_index = i - 1
             self.__forward_button[i].disabled = False
 
         self.__update_code()
-        self.create_image()
+        self.__create_image()
         self.__image_output.clear_output(wait=True)
         with self.__image_output:
-            display(Image.fromarray(self.result_display))
+            display(Image.fromarray(self.__result_display))
 
     def __swap_widgets(self, i, j):
         widgets_to_swap = [
@@ -590,13 +665,18 @@ class BlendedImage:
     def editor(self):
         """
         Create a widget to edit the blended image.
+
+        Returns
+        -------
+        ipywidgets.widgets
+            Widget to edit the blended image.
         """
 
-        tab_contents = [f"Image {i}" for i in range(len(self.images))]
+        tab_contents = [f"Image {i}" for i in range(len(self.__images))]
         children = [widgets.Text(description=name) for name in tab_contents]
         titles = ["Image 1 (front)"]
-        titles += [f"Image {i+1}" for i in range(1, len(self.images) - 1)]
-        i = len(self.images)
+        titles += [f"Image {i+1}" for i in range(1, len(self.__images) - 1)]
+        i = len(self.__images)
         titles += [f"Image {i} (back)", "Upload new image"]
         self.__tab = widgets.Tab(
             children=children,
@@ -604,10 +684,10 @@ class BlendedImage:
         )
 
         def change_of_tab(b):
-            self.create_image()
+            self.__create_image()
             self.__image_output.clear_output(wait=True)
             with self.__image_output:
-                display(Image.fromarray(self.result_display))
+                display(Image.fromarray(self.__result_display))
 
         self.__tab.observe(change_of_tab)
         self.__x_slider = [None] * len(children)
@@ -631,11 +711,11 @@ class BlendedImage:
         self.__image_output = widgets.Output()
 
         def create_widgets():
-            for i in range(len(self.images)):
+            for i in range(len(self.__images)):
                 self.__x_slider[i] = widgets.IntSlider(
-                    value=self.positions[i][0],
+                    value=self.__positions[i][0],
                     min=-self.__image_widths[i],
-                    max=self.background_croped.shape[1],
+                    max=self.__background_croped.shape[1],
                     step=1,
                     description="x:",
                     disabled=False,
@@ -645,16 +725,16 @@ class BlendedImage:
                     readout_format="d",
                     # add margins
                     layout=widgets.Layout(
-                        width=str(self.background_display_width) + "px",
+                        width=str(self.__background_display_width) + "px",
                         margin="0px 0px 0px 50px",
                     ),
                 )
                 self.__y_slider[i] = widgets.IntSlider(
-                    value=self.background_croped.shape[0]
+                    value=self.__background_croped.shape[0]
                     - self.__image_heights[i]
-                    - self.positions[i][1],
+                    - self.__positions[i][1],
                     min=-self.__image_heights[i],
-                    max=self.background_croped.shape[0],
+                    max=self.__background_croped.shape[0],
                     step=1,
                     description="y:",
                     disabled=False,
@@ -663,7 +743,7 @@ class BlendedImage:
                     readout=False,
                     readout_format="d",
                     layout=widgets.Layout(
-                        height=str(self.background_display_height) + "px"
+                        height=str(self.__background_display_height) + "px"
                     ),
                 )
                 self.__to_show[i] = widgets.Checkbox(
@@ -673,7 +753,7 @@ class BlendedImage:
                     indent=True,
                 )
                 self.__opacity_slider[i] = widgets.FloatSlider(
-                    value=self.opacities[i],
+                    value=self.__opacities[i],
                     min=0,
                     max=1,
                     step=0.01,
@@ -685,7 +765,7 @@ class BlendedImage:
                     readout_format=".2f",
                 )
                 self.__image_scale_slider[i] = widgets.FloatSlider(
-                    value=self.image_scales[i],
+                    value=self.__image_scales[i],
                     min=0.01,
                     max=2,
                     step=0.01,
@@ -697,9 +777,9 @@ class BlendedImage:
                     readout_format=".2f",
                 )
                 self.__image_crop_right[i] = widgets.BoundedIntText(
-                    value=self.images_crop[i][1],
+                    value=self.__images_crop[i][1],
                     min=0,
-                    max=self.images[i].shape[1] - 1,
+                    max=self.__images[i].shape[1] - 1,
                     step=1,
                     description="",
                     disabled=False,
@@ -711,9 +791,9 @@ class BlendedImage:
                 )
                 self.__image_crop_right[i].desc = "Crop right"
                 self.__image_crop_left[i] = widgets.BoundedIntText(
-                    value=self.images_crop[i][3],
+                    value=self.__images_crop[i][3],
                     min=0,
-                    max=self.images[i].shape[1] - 1,
+                    max=self.__images[i].shape[1] - 1,
                     step=1,
                     description="",
                     disabled=False,
@@ -725,7 +805,7 @@ class BlendedImage:
                 )
                 self.__image_crop_left[i].desc = "Crop left"
                 self.__image_crop_top[i] = widgets.BoundedIntText(
-                    value=self.images_crop[i][0],
+                    value=self.__images_crop[i][0],
                     min=0,
                     max=100,
                     step=1,
@@ -739,9 +819,9 @@ class BlendedImage:
                 )
                 self.__image_crop_top[i].desc = "Crop top"
                 self.__image_crop_bottom[i] = widgets.BoundedIntText(
-                    value=self.images_crop[i][2],
+                    value=self.__images_crop[i][2],
                     min=0,
-                    max=self.images[i].shape[0] - 1,
+                    max=self.__images[i].shape[0] - 1,
                     step=1,
                     description="",
                     disabled=False,
@@ -760,7 +840,7 @@ class BlendedImage:
                 )
                 # checkbox
                 self.__remove_widget_check[i] = widgets.Checkbox(
-                    value=deepcopy(self.remove[i][0]),
+                    value=deepcopy(self.__remove[i][0]),
                     description="Remove color",
                     disabled=False,
                     indent=True,
@@ -774,7 +854,7 @@ class BlendedImage:
                     disabled=False,
                 )
                 self.__remove_widget_threshold[i] = widgets.IntSlider(
-                    value=deepcopy(self.remove[i][2]),
+                    value=deepcopy(self.__remove[i][2]),
                     min=0,
                     max=100,
                     step=1,
@@ -911,7 +991,7 @@ class BlendedImage:
             """
             Copy code to clipboard.
             """
-            to_copy = str("code = " + '"' + self.code + '"')
+            to_copy = str("code = " + '"' + self.__code + '"')
             df = pd.DataFrame([to_copy])
             df.to_clipboard(index=False, header=False, excel=False, sep=None)
             # change button to green for a few seconds
@@ -936,8 +1016,8 @@ class BlendedImage:
 
         background_crop_right = widgets.BoundedIntText(
             value=0,
-            min=-self.background_croped.shape[1] + 10,
-            max=self.background_croped.shape[1],
+            min=-self.__background_croped.shape[1] + 10,
+            max=self.__background_croped.shape[1],
             step=1,
             description="Crop/expand right",
             disabled=False,
@@ -949,8 +1029,8 @@ class BlendedImage:
         )
         background_crop_left = widgets.BoundedIntText(
             value=0,
-            min=-self.background_croped.shape[1] + 10,
-            max=self.background_croped.shape[1],
+            min=-self.__background_croped.shape[1] + 10,
+            max=self.__background_croped.shape[1],
             step=5,
             description="Crop/expand left",
             disabled=False,
@@ -962,8 +1042,8 @@ class BlendedImage:
         )
         background_crop_top = widgets.BoundedIntText(
             value=0,
-            min=-self.background_croped.shape[0] + 10,
-            max=self.background_croped.shape[0],
+            min=-self.__background_croped.shape[0] + 10,
+            max=self.__background_croped.shape[0],
             step=5,
             description="Crop/expand top",
             disabled=False,
@@ -976,8 +1056,8 @@ class BlendedImage:
 
         background_crop_bottom = widgets.BoundedIntText(
             value=0,
-            min=-self.background_croped.shape[0] + 10,
-            max=self.background_croped.shape[0],
+            min=-self.__background_croped.shape[0] + 10,
+            max=self.__background_croped.shape[0],
             step=5,
             description="Crop/expand bottom",
             disabled=False,
@@ -1006,7 +1086,7 @@ class BlendedImage:
         background_crop_bottom.observe(self.__update_image, names="value")
 
         with self.__image_output:
-            display(Image.fromarray(self.result_display))
+            display(Image.fromarray(self.__result_display))
 
         #    | x  x  x
         # y  |  image  | opacity
@@ -1034,18 +1114,18 @@ class BlendedImage:
             new_image = new_image.convert("RGB")
             new_image = np.array(new_image)
 
-            self.images.append(new_image)
-            self.positions.append((0, 0))
-            self.opacities.append(1)
-            self.image_scales.append(0.5)
-            self.remove.append([False, [255, 255, 255], 0])
+            self.__images.append(new_image)
+            self.__positions.append((0, 0))
+            self.__opacities.append(1)
+            self.__image_scales.append(0.5)
+            self.__remove.append([False, [255, 255, 255], 0])
             self.__to_show.append(True)
-            self.images_crop.append([0, 0, 0, 0])
+            self.__images_crop.append([0, 0, 0, 0])
             self.__image_heights.append(
-                self.image_scales[-1] * self.background_croped.shape[0]
+                self.__image_scales[-1] * self.__background_croped.shape[0]
             )
             self.__image_widths.append(
-                self.images[-1].shape[1]
+                self.__images[-1].shape[1]
                 * (self.__image_heights[-1] / new_image.shape[0])
             )
 
@@ -1068,16 +1148,16 @@ class BlendedImage:
 
             create_widgets()
             self.__update_code()
-            self.create_image()
+            self.__create_image()
             b = widgets.Button()
-            b.rank = len(self.images) - 1
+            b.rank = len(self.__images) - 1
             self.__update_image(b)
 
-            tab_contents = [f"Image {i}" for i in range(len(self.images))]
+            tab_contents = [f"Image {i}" for i in range(len(self.__images))]
             children = [widgets.Text(description=name) for name in tab_contents]
             titles = ["Image 1 (front)"]
-            titles += [f"Image {i+1}" for i in range(1, len(self.images) - 1)]
-            titles += [f"Image {len(self.images)} (back)", "Upload new image"]
+            titles += [f"Image {i+1}" for i in range(1, len(self.__images) - 1)]
+            titles += [f"Image {len(self.__images)} (back)", "Upload new image"]
             self.__tab = widgets.Tab(
                 children=children,
                 titles=titles,
@@ -1100,7 +1180,7 @@ class BlendedImage:
         self.__tab.set_title(len(self.__tab.children) - 1, "Upload new image")
 
         image_display_size = widgets.IntSlider(
-            value=self.background_display_height,
+            value=self.__background_display_height,
             min=100,
             max=600,
             step=1,
@@ -1120,22 +1200,25 @@ class BlendedImage:
             """
             Update the image display size.
             """
-            self.background_display_height = change["new"]
-            self.background_display_width = int(
-                self.background_display_height
-                * (self.background_croped.shape[1] / self.background_croped.shape[0])
+            self.__background_display_height = change["new"]
+            self.__background_display_width = int(
+                self.__background_display_height
+                * (
+                    self.__background_croped.shape[1]
+                    / self.__background_croped.shape[0]
+                )
             )
-            for k in range(len(self.images)):
+            for k in range(len(self.__images)):
                 self.__x_slider[k].layout.width = (
-                    str(self.background_display_width) + "px"
+                    str(self.__background_display_width) + "px"
                 )
                 self.__y_slider[k].layout.height = (
-                    str(self.background_display_height) + "px"
+                    str(self.__background_display_height) + "px"
                 )
-            self.create_image()
+            self.__create_image()
             self.__image_output.clear_output(wait=True)
             with self.__image_output:
-                display(Image.fromarray(self.result_display))
+                display(Image.fromarray(self.__result_display))
 
         image_display_size.observe(update_image_display_size, names="value")
 
@@ -1155,10 +1238,10 @@ class BlendedImage:
                 self.__visualize_layer = True
             else:
                 self.__visualize_layer = False
-            self.create_image()
+            self.__create_image()
             self.__image_output.clear_output(wait=True)
             with self.__image_output:
-                display(Image.fromarray(self.result_display))
+                display(Image.fromarray(self.__result_display))
 
         visualize_layer_check.observe(change_vis_value)
 
@@ -1185,4 +1268,4 @@ class BlendedImage:
         bottom = widgets.VBox([background_part, code_part])
         self.__final = widgets.VBox([self.__tab, bottom])
 
-        display(self.__final)
+        return self.__final

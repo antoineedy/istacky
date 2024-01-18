@@ -1,0 +1,56 @@
+site_name: Documentation
+nav:
+  - Home: index.md
+  - User Guide: user_guide.md
+  - API reference: api.md
+  - About: about.md
+
+theme:
+  name: material
+  palette:
+    primary: teal
+  font:
+    text: Mukta
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.path
+    - navigation.indexes
+    - navigation.footer
+    - search.suggest
+  logo: img/logo_white.png
+  favicon: img/favicon.ico
+
+plugins:
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+          options:
+            members_order: alphabetical
+            filters:
+              - "^(?!__).*"
+            merge_init_into_class: True
+            docstring_style: numpy
+            show_bases: False
+            show_source: False
+            show_root_heading: True
+            show_root_full_path: False
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            separate_signature: true
+            show_signature_annotations: False
+  - search
+
+extra:
+  social:
+    - icon: fontawesome/brands/linkedin
+      link: https://linkedin.com/in/antoineedy
+    - icon: fontawesome/brands/github
+      link: https://github.com/antoineedy
+    - icon: fontawesome/solid/paper-plane
+      link: mailto:antoineedy@outlook.fr
+  generator: false
+
+repo_url: https://github.com/antoineedy/istacky
+repo_name: antoineedy/istacky
