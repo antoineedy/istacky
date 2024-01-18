@@ -27,7 +27,7 @@ pip install -e .
 !!! example
     Have a look at [this notebook](https://github.com/antoineedy/istacky/blob/main/example.ipynb) for an example you can run at home!
 
-#### :video_camera: Video tutorial (coming soon)
+#### :video_camera: Video tutorial
 
 !!! quote ""
     === "English version"
