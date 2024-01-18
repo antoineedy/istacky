@@ -5,3 +5,5 @@ lib
 pyvenv.cfg
 share
 etc
+.ipynb_checkpoints
+.cache
