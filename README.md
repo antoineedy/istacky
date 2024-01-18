@@ -10,7 +10,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/antoineedy/istacky">
-    <img src="design/logo.png" alt="Logo" height="120">
+    <img src="docs/img/logo.png" alt="Logo" height="120">
   </a>
 
 <h3 align="center">IStacky</h3>
@@ -35,7 +35,7 @@
 
 <div align="center">
 
-[![Usage of istacky][product-screenshot]](https://github.com/antoineedy/istacky/blob/main/design/gif1.gif)
+[![Usage of istacky][product-screenshot]](https://github.com/antoineedy/istacky/blob/main/docs/img/gif1.gif)
 
 </div>
 
@@ -97,13 +97,13 @@ Create a `BlendedImage` object and display it:
 blended = istacky.BlendedImage(background, [img1, img2])
 blended.show()
 ```
-![First output](design/output_bad.png "Title")
+![First output](docs/img/output_bad.png "Title")
 
 The images are just stacked on top of each other! Let's apply some modifications to them:
 ```python
 blended.editor()
 ```
-![Editor](design/editor.png "Title")
+![Editor](docs/img/editor.png "Title")
 
 Calling editor displays a widget that allows you to apply modifications to the images. You can crop, resize, change the opacity, remove the background, add images, change the orders of the layers etc. 
 
@@ -112,7 +112,7 @@ In our case, we want to put the logo in one corner, circle the pisition of the b
 ```python
 blended.show()
 ```
-![Final output](design/output_good.png "Title")
+![Final output](docs/img/output_good.png "Title")
 
 Now, if we want to apply the same modifications to another image, we can have access to the code that was used to create the final image, and apply it to another one:
 ```python
@@ -134,7 +134,7 @@ new_blended = istacky.BlendedImage(
     
 new_blended.show()
 ```
-![Final output](design/output_good2.png "Title")
+![Final output](docs/img/output_good2.png "Title")
 
 We can see that the modifications have been applied to the new images!
 
@@ -201,4 +201,4 @@ My name is Antoine EDY. Here is my [LinkedIn](https://www.linkedin.com/in/antoin
 [license-url]: https://github.com/antoineedy/istacky/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/antoineedy
-[product-screenshot]: design/gif1.gif
+[product-screenshot]: docs/img/gif1.gif
