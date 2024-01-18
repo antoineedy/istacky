@@ -18,7 +18,7 @@
   <p align="center">
     A lightweight image processing library
     <br />
-    <a href="https://github.com/antoineedy/istacky"><strong>Explore the docs »</strong></a>
+    <a href="https://antoineedy.github.io/istacky"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="https://github.com/antoineedy/istacky/blob/main/example.ipynb">View Example</a>
@@ -71,7 +71,7 @@ pip install -e .
 <!-- USAGE EXAMPLES -->
 ## :mag_right: Usage
 
-Istacky is meant to be used in Jupyter Notebooks.
+Istacky is meant to be used in Jupyter Notebooks. Do not foregt to have a look at the [documentation](https://antoineedy.github.io/istacky) for more details!
 
 #### :video_camera: Tutorial (coming soon)
 
