@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="/img/logo.png" alt="Logo" width="250">
+<img src="https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/logo.png" alt="Logo" width="250">
 
   <p align="center">
     A lightweight image processing library
@@ -15,7 +15,7 @@ __IStacky__ is a __lightweight image processing library__ based on the [Ipywidge
 
 This project has been made to be used in the context of __machine learning__ and __computer vision projects__, where the user needs to __quickly__ and __easily__ create output images that combines several images: plots, photos, logos etc.
 
-![Gif](/img/gif1.gif "Title")
+![Gif](https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/gif1.gif "Title")
 
 ---
 
