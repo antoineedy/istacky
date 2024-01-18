@@ -27,7 +27,14 @@ pip install -e .
 !!! example
     Have a look at [this notebook](https://github.com/antoineedy/istacky/blob/main/example.ipynb) for an example you can run at home!
 
-#### :video_camera: Tutorial (coming soon)
+#### :video_camera: Video tutorial (coming soon)
+
+!!! quote ""
+    === "English version"
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/U3erapTSOeQ?si=WQbar1MTokNdB-dT" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+    === "French version"
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/U3erapTSOeQ?si=WQbar1MTokNdB-dT" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 #### :notebook: Example
 
@@ -49,13 +56,13 @@ Create a `BlendedImage` object and display it:
 blended = istacky.BlendedImage(background, [img1, img2])
 blended.show()
 ```
-![First output](design/output_bad.png "Title")
+![First output](/img/output_bad.png "Title")
 
 The images are just stacked on top of each other! Let's apply some modifications to them:
 ```python
 blended.editor()
 ```
-![Editor](design/editor.png "Title")
+![Editor](/img/editor.png "Title")
 
 Calling editor displays a widget that allows you to apply modifications to the images. You can crop, resize, change the opacity, remove the background, add images, change the orders of the layers etc. 
 
@@ -64,7 +71,7 @@ In our case, we want to put the logo in one corner, circle the pisition of the b
 ```python
 blended.show()
 ```
-![Final output](design/output_good.png "Title")
+![Final output](/img/output_good.png "Title")
 
 Now, if we want to apply the same modifications to another image, we can have access to the code that was used to create the final image, and apply it to another one:
 ```python
@@ -86,6 +93,6 @@ new_blended = istacky.BlendedImage(
     
 new_blended.show()
 ```
-![Final output](design/output_good2.png "Title")
+![Final output](/img/output_good2.png "Title")
 
 We can see that the modifications have been applied to the new images!
