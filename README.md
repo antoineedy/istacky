@@ -145,7 +145,7 @@ We can see that the modifications have been applied to the new images!
 
 | Widget  | Function  | Values  |
 |:---:|---|---|
-| <img src=docs/img/widgets/layers.png  alt="Logo" width="300"> | Switch between layers  | $l \in \llbracket 1, N_{images}\rrbracket$  |
+| <img src=docs/img/widgets/layers.png  alt="Logo" width="300"> | Switch between layers  | $l \in ⟦1, N_{images}⟧$  |
 |<img src=docs/img/widgets/x.png  alt="Logo" width="200"> | Reposition the image ($x$ and $y$ coordinates)  | $x \in [-Image_{width}, Bg_{width} + Image_{width}] \\ y \in [-Image_{height}, Bg_{height} + Image_{height}]$  |
 |<img src=docs/img/widgets/opacity.png  alt="Logo" width="250"> | Change the opacity of the selected layer  | $o\in[0, 1]$  |
 | <img src=docs/img/widgets/remove.png  alt="Logo" width="200">  | Remove one color of the selected layer | $[r, g, b] \in \llbracket0, 255\rrbracket^3$  |
