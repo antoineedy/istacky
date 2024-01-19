@@ -146,20 +146,20 @@ We can see that the modifications have been applied to the new images!
 | Widget  | Function  | Values  |
 |:---:|---|---|
 | <img src=https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/widgets/layers.png  alt="Logo" width="300"> | Switch between layers  | $l \in ⟦1, N_{images}⟧$  <tr></tr>|
-|<img src=https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/widgets/x.png  alt="Logo" width="200"> | Reposition the image ($x$ and $y$ coordinates)  | $x \in [-I_{w}, Bg_{w} + I{w}] \\ y \in [-Y_{h}, Bg_{h} + I_{h}]$  |
-|<img src=https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/widgets/opacity.png  alt="Logo" width="250"> | Change the opacity of the selected layer  | $o\in[0, 1]$  |
-| <img src=https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/widgets/remove.png  alt="Logo" width="200">  | Remove one color of the selected layer | $[r, g, b] \in ⟦0, 255⟧^3$  |
-| <img src=https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/widgets/threshold.png  alt="Logo" width="200">   | How close the removed colors must be from the selected color | $t\in[0, 100]$  |
-| <img src=https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/widgets/scale.png  alt="Logo" width="200">  | The height of the selected image in % of the background height  | $s\in]0, 2]$  |
-| <img src=https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/widgets/crop_im.png  alt="Logo" width="200">  | Percentage of the selected image cropped in all 4 directions, and reseting the crop  |$c\in[0, 100]$  |
-| <img src=https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/widgets/show.png  alt="Logo" width="150">  | Show the selected layer in the final image  | $s\in\{True, False\}$  |
-| <img src=https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/widgets/crop_expand.png  alt="Logo" width="200">  | Crop or expand the background image (in pixels) in all 4 directions | $c\in \mathbb{Z}$  |
-| <img src=https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/widgets/reset.png  alt="Logo" width="150">  | Reset the cropping of teh background  |   |
-| <img src=https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/widgets/copy.png  alt="Logo" width="200">  | Copy the code of the current output to the clipboard  |   |
-| <img src=https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/widgets/visualize.png  alt="Logo" width="200">  | Make a red border appear on the selected layer for editing purposes (does not appear on the final output)  | $v\in\{True, False\}$  |
-| <img src=https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/widgets/display.png  alt="Logo" width="200">  | Set the size of the image displayed in pixels to fit all screen sizes (does not change the output size) | $d\in]0, 1000]$  |
-| <img src=https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/widgets/add_image.png  alt="Logo" width="200">  | Upload a new image to stack. Creates a new layer.  |   |
-| <img src=https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/widgets/add.png  alt="Logo" width="400">  | To choose the new image to add from the user's computer. Made with [ipyfilechooser](https://github.com/crahan/ipyfilechooser)  |   |
+|<img src=https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/widgets/x.png  alt="Logo" width="200"> | Reposition the image ($x$ and $y$ coordinates)  | $x \in [-I_{w}, Bg_{w} + I{w}] \\ y \in [-Y_{h}, Bg_{h} + I_{h}]$  <tr></tr>|
+|<img src=https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/widgets/opacity.png  alt="Logo" width="250"> | Change the opacity of the selected layer  | $o\in[0, 1]$  <tr></tr>|
+| <img src=https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/widgets/remove.png  alt="Logo" width="200">  | Remove one color of the selected layer | $[r, g, b] \in ⟦0, 255⟧^3$  <tr></tr>|
+| <img src=https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/widgets/threshold.png  alt="Logo" width="200">   | How close the removed colors must be from the selected color | $t\in[0, 100]$  <tr></tr>|
+| <img src=https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/widgets/scale.png  alt="Logo" width="200">  | The height of the selected image in % of the background height  | $s\in]0, 2]$  <tr></tr>|
+| <img src=https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/widgets/crop_im.png  alt="Logo" width="200">  | Percentage of the selected image cropped in all 4 directions, and reseting the crop  |$c\in[0, 100]$  <tr></tr>|
+| <img src=https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/widgets/show.png  alt="Logo" width="150">  | Show the selected layer in the final image  | $s\in\{True, False\}$  <tr></tr>|
+| <img src=https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/widgets/crop_expand.png  alt="Logo" width="200">  | Crop or expand the background image (in pixels) in all 4 directions | $c\in \mathbb{Z}$  <tr></tr>|
+| <img src=https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/widgets/reset.png  alt="Logo" width="150">  | Reset the cropping of teh background  |   <tr></tr>|
+| <img src=https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/widgets/copy.png  alt="Logo" width="200">  | Copy the code of the current output to the clipboard  |   <tr></tr>|
+| <img src=https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/widgets/visualize.png  alt="Logo" width="200">  | Make a red border appear on the selected layer for editing purposes (does not appear on the final output)  | $v\in\{True, False\}$ <tr></tr> |
+| <img src=https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/widgets/display.png  alt="Logo" width="200">  | Set the size of the image displayed in pixels to fit all screen sizes (does not change the output size) | $d\in]0, 1000]$  <tr></tr>|
+| <img src=https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/widgets/add_image.png  alt="Logo" width="200">  | Upload a new image to stack. Creates a new layer.  |   <tr></tr>|
+| <img src=https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/widgets/add.png  alt="Logo" width="400">  | To choose the new image to add from the user's computer. Made with [ipyfilechooser](https://github.com/crahan/ipyfilechooser)  |   <tr></tr>|
 
 <!-- ROADMAP -->
 ## :world_map: Future of the project
