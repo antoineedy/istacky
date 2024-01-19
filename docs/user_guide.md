@@ -96,3 +96,5 @@ new_blended.show()
 ![Final output](https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/output_good2.png "Title")
 
 We can see that the modifications have been applied to the new images!
+
+## Details about the interface

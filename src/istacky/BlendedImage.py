@@ -431,37 +431,42 @@ class BlendedImage:
 
         if self.__visualize_layer and self.__tab is not None:
             k = self.__tab.selected_index
-            # put red rectangle on selected image
-            image_crop = [int(self.__images_crop[k][i]) for i in range(4)]
-            # now in pixel (it was in percent):
-            image_crop[0] = image_crop[0] * self.__image_heights[k] / 100
-            image_crop[2] = image_crop[2] * self.__image_heights[k] / 100
-            image_crop[1] = image_crop[1] * self.__image_widths[k] / 100
-            image_crop[3] = image_crop[3] * self.__image_widths[k] / 100
-            rectangle_position = [
-                self.__positions[k][0],
-                self.__positions[k][1],
-                self.__positions[k][0]
-                + self.__image_widths[k]
-                - image_crop[1]
-                - image_crop[3],
-                self.__positions[k][1]
-                + self.__image_heights[k]
-                - image_crop[0]
-                - image_crop[2],
-            ]
-            rectangle_position = [
-                int(i * self.__background_display_width / self.__background.shape[1])
-                for i in rectangle_position
-            ]
-            background_to_display.astype(np.uint8)
-            background_to_display = cv2.rectangle(
-                background_to_display,
-                (rectangle_position[0], rectangle_position[1]),
-                (rectangle_position[2], rectangle_position[3]),
-                (255, 0, 0),
-                3,
-            )
+            if k == len(self.__images):
+                pass
+            else:
+                # put red rectangle on selected image
+                image_crop = [int(self.__images_crop[k][i]) for i in range(4)]
+                # now in pixel (it was in percent):
+                image_crop[0] = image_crop[0] * self.__image_heights[k] / 100
+                image_crop[2] = image_crop[2] * self.__image_heights[k] / 100
+                image_crop[1] = image_crop[1] * self.__image_widths[k] / 100
+                image_crop[3] = image_crop[3] * self.__image_widths[k] / 100
+                rectangle_position = [
+                    self.__positions[k][0],
+                    self.__positions[k][1],
+                    self.__positions[k][0]
+                    + self.__image_widths[k]
+                    - image_crop[1]
+                    - image_crop[3],
+                    self.__positions[k][1]
+                    + self.__image_heights[k]
+                    - image_crop[0]
+                    - image_crop[2],
+                ]
+                rectangle_position = [
+                    int(
+                        i * self.__background_display_width / self.__background.shape[1]
+                    )
+                    for i in rectangle_position
+                ]
+                background_to_display.astype(np.uint8)
+                background_to_display = cv2.rectangle(
+                    background_to_display,
+                    (rectangle_position[0], rectangle_position[1]),
+                    (rectangle_position[2], rectangle_position[3]),
+                    (255, 0, 0),
+                    3,
+                )
 
         self.__result = background
         self.__result_display = background_to_display

@@ -141,7 +141,25 @@ We can see that the modifications have been applied to the new images!
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+## :gear: GUI options
 
+| Widget  | Function  | Values  |
+|:---:|---|---|
+| <img src=docs/img/widgets/layers.png  alt="Logo" width="300"> | Switch between layers  | $l \in \llbracket 1, N_{images}\rrbracket$  |
+|<img src=docs/img/widgets/x.png  alt="Logo" width="200"> | Reposition the image ($x$ and $y$ coordinates)  | $x \in [-Image_{width}, Bg_{width} + Image_{width}] \\ y \in [-Image_{height}, Bg_{height} + Image_{height}]$  |
+|<img src=docs/img/widgets/opacity.png  alt="Logo" width="250"> | Change the opacity of the selected layer  | $o\in[0, 1]$  |
+| <img src=docs/img/widgets/remove.png  alt="Logo" width="200">  | Remove one color of the selected layer | $[r, g, b] \in \llbracket0, 255\rrbracket^3$  |
+| <img src=docs/img/widgets/threshold.png  alt="Logo" width="200">   | How close the removed colors must be from the selected color | $t\in[0, 100]$  |
+| <img src=docs/img/widgets/scale.png  alt="Logo" width="200">  | The height of the selected image in % of the background height  | $s\in]0, 2]$  |
+| <img src=docs/img/widgets/crop_im.png  alt="Logo" width="200">  | Percentage of the selected image cropped in all 4 directions, and reseting the crop  |$c\in[0, 100]$  |
+| <img src=docs/img/widgets/show.png  alt="Logo" width="150">  | Show the selected layer in the final image  | $s\in\{True, False\}$  |
+| <img src=docs/img/widgets/crop_expand.png  alt="Logo" width="200">  | Crop or expand the background image (in pixels) in all 4 directions | $c\in \mathbb{Z}$  |
+| <img src=docs/img/widgets/reset.png  alt="Logo" width="150">  | Reset the cropping of teh background  |   |
+| <img src=docs/img/widgets/copy.png  alt="Logo" width="200">  | Copy the code of the current output to the clipboard  |   |
+| <img src=docs/img/widgets/visualize.png  alt="Logo" width="200">  | Make a red border appear on the selected layer for editing purposes (does not appear on the final output)  | $v\in\{True, False\}$  |
+| <img src=docs/img/widgets/display.png  alt="Logo" width="200">  | Set the size of the image displayed in pixels to fit all screen sizes (does not change the output size) | $d\in]0, 1000]$  |
+| <img src=docs/img/widgets/add_image.png  alt="Logo" width="200">  | Upload a new image to stack. Creates a new layer.  |   |
+| <img src=docs/img/widgets/add.png  alt="Logo" width="400">  | To choose the new image to add from the user's computer. Made with [ipyfilechooser](https://github.com/crahan/ipyfilechooser)  |   |
 
 <!-- ROADMAP -->
 ## :world_map: Future of the project
@@ -202,3 +220,20 @@ My name is Antoine EDY. Here is my [LinkedIn](https://www.linkedin.com/in/antoin
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/antoineedy
 [product-screenshot]: docs/img/gif1.gif
+
+[widget-layers]: docs/img/widgets/layers.png 
+[widget-add]: docs/img/widgets/add.png
+[widget-remove]: docs/img/widgets/remove.png
+[widget-crop-im]: docs/img/widgets/crop_im.png
+[widget-crop-expand]: docs/img/widgets/crop_expand.png
+[widget-display]: docs/img/widgets/display.png
+[widget-opacity]: docs/img/widgets/opacity.png
+[widget-reset]: docs/img/widgets/reset.png
+[widget-show]: docs/img/widgets/show.png
+[widget-add-image]: docs/img/widgets/add_image.png
+[widget-scale]: docs/img/widgets/scale.png
+[widget-x]: docs/img/widgets/x.png
+[widget-y]: docs/img/widgets/y.png
+[widget-copy]: docs/img/widgets/copy.png
+[widget-threshold]: docs/img/widgets/threshold.png
+[widget-visualize]: docs/img/widgets/visualize.png
