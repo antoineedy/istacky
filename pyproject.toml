@@ -40,5 +40,7 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/antoineedy/istack"
-Issues = "https://github.com/antoineedy/istack/issues"
+Homepage = "https://github.com/antoineedy/istacky"
+Documentation = "https://antoineedy.github.io/istacky/"
+Repository = "https://github.com/antoineedy/istacky"
+Issues = "https://github.com/antoineedy/istacky/issues"
