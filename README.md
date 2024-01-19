@@ -146,7 +146,7 @@ We can see that the modifications have been applied to the new images!
 | Widget  | Function  | Values  |
 |:---:|---|---|
 | <img src=https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/widgets/layers.png  alt="Logo" width="300"> | Switch between layers  | $l \in ⟦1, N_{images}⟧$  <tr></tr>|
-|<img src=https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/widgets/x.png  alt="Logo" width="200"> | Reposition the image ($x$ and $y$ coordinates)  | $x \in [-I_{w}, Bg_{w} + I{w}] \\ y \in [-Y_{h}, Bg_{h} + I_{h}]$  <tr></tr>|
+|<img src=https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/widgets/x.png  alt="Logo" width="200"> | Reposition the image ($x$ and $y$ coordinates)  | $x \in [-I_{w}, Bg_{w} + I{w}]$  <br/>$y \in [-Y_{h}, Bg_{h} + I_{h}]$  <tr></tr>|
 |<img src=https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/widgets/opacity.png  alt="Logo" width="250"> | Change the opacity of the selected layer  | $o\in[0, 1]$  <tr></tr>|
 | <img src=https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/widgets/remove.png  alt="Logo" width="200">  | Remove one color of the selected layer | $[r, g, b] \in ⟦0, 255⟧^3$  <tr></tr>|
 | <img src=https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/widgets/threshold.png  alt="Logo" width="200">   | How close the removed colors must be from the selected color | $t\in[0, 100]$  <tr></tr>|
