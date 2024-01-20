@@ -10,6 +10,11 @@ from copy import deepcopy
 from ipyfilechooser import FileChooser
 from IPython.display import display
 
+#Ignore warnings
+
+import warnings
+warnings.filterwarnings('ignore')
+
 # Create the class
 
 
@@ -90,7 +95,7 @@ class BlendedImage:
             code = code.split("#")
             code = code[1:]
             for k in range(len(code)):
-                code[k] = code[k].split("-")
+                code[k] = code[k].split("+")
 
             if len(code) != len(images):
                 raise ValueError(
@@ -165,6 +170,13 @@ class BlendedImage:
 
         self.__visualize_layer = False
 
+        # change crop to match the new size of the image
+
+        if self.__last_size is not None:
+            for k in range(len(cropped)):
+                cropped[k] = int(
+                    cropped[k] * self.__background.shape[k % 2] / self.__last_size[k % 2]
+                )
         self.__cropped = cropped
         self.__background_croped = None
         self.__images_crop = images_crop
@@ -240,21 +252,21 @@ class BlendedImage:
             self.__code += (
                 "#"
                 + str(round(self.__image_scales[k], 4))
-                + "-"
+                + "+"
                 + str(int(self.__positions[k][0]))
-                + "-"
+                + "+"
                 + str(int(self.__positions[k][1]))
-                + "-"
+                + "+"
                 + str(round(self.__opacities[k], 4))
-                + "-"
+                + "+"
                 + str(1 if self.__remove[k][0] else 0)
-                + "-"
+                + "+"
                 + str(self.__remove[k][1])[1:-1].replace(" ", "")
-                + "-"
+                + "+"
                 + str(self.__remove[k][2])
-                + "-"
+                + "+"
                 + str(1 if self.__to_show[k] else 0)
-                + "-"
+                + "+"
                 + str(self.__images_crop[k])[1:-1].replace(" ", "")
             )
         self.__code += "c" + str(self.__cropped)[1:-1].replace(" ", "")

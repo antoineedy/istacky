@@ -48,12 +48,12 @@ This project has been made to be used in the context of __machine learning__ and
 
 ## :technologist: Installation
 
-__:arrow_heading_down: (coming soon) using pip__
+__using pip:__
 ```sh
-pip install istacky # not working yet!
+pip install istacky
 ```
 
-__:twisted_rightwards_arrows: install and run from source code__
+__from source code:__
 
 Clone the repo, create a virtual environment and install using pip:
 ```sh
@@ -79,22 +79,23 @@ Istacky is meant to be used in Jupyter Notebooks. Do not foregt to have a look a
 
 _Have a look at the [example notebook](https://github.com/antoineedy/istacky/blob/main/example.ipynb) for a complete example._
 
-Import the libraries needed:
+In our example, we want to create an output image, with a tennis point in background, and some plots, a circle and a logo on top of it. We will first import the libraries needed:
 ```python
 from PIL import Image
 import istacky
 ```
 
-Load the images we want to stack:
+Then load the images we want to stack:
 ```python
 background = Image.open("image/background.png")
-img1 = Image.open("image/img1.png")
-img2 = Image.open("image/img2.png")
+plot = Image.open("image/plot.png")
+circle = Image.open("image/circle.png")
+logo = Image.open("image/logo.png")
 ```
 
 Create a `BlendedImage` object and display it:
 ```python
-blended = istacky.BlendedImage(background, [img1, img2])
+blended = istacky.BlendedImage(background, [plot, circle, logo])
 blended.show()
 ```
 ![First output](https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/output_bad.png "Title")
@@ -105,9 +106,7 @@ blended.editor()
 ```
 ![Editor](https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/editor.png "Title")
 
-Calling editor displays a widget that allows you to apply modifications to the images. You can crop, resize, change the opacity, remove the background, add images, change the orders of the layers etc. 
-
-In our case, we want to put the logo in one corner, circle the pisition of the ball and add a plot of the trajectory of the ball. After the changes, here is the final result:
+Calling editor displays a widget that allows you to apply modifications to the images. You can crop, resize, change the opacity, remove the background, add images, change the orders of the layers etc. In our case, we want to put the logo in one corner, circle the position of the ball and add a plot of the trajectory of the ball. After the changes, here is the final result:
 
 ```python
 blended.show()
@@ -118,17 +117,17 @@ Now, if we want to apply the same modifications to another image, we can have ac
 ```python
 my_code = blended.get_code()
 ```
-We will use the same background, but different images:
+Let's import the new images.
 ```python
-new_img1 = Image.open("image/new_img1.png")
-new_img2 = Image.open("image/new_img2.png")
-new_img3 = Image.open("image/new_img3.png")
+background2 = Image.open("image/background2.png")
+plot2 = Image.open("image/plot2.png")
+circle2 = Image.open("image/circle2.png")
 ``` 
 We specify the code that was used to create the first image, and apply it to the new images:
 ```python
 new_blended = istacky.BlendedImage(
-    background=background,
-    images = [new_img1, new_img2, new_img3],
+    background=plot2,
+    images = [plot2, circle2, logo],
     code=my_code
     )
     
