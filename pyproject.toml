@@ -7,7 +7,7 @@ name = "istacky"
 version = "0.1.0"
 authors = [{ name = "Antoine EDY", email = "antoineedy@outlook.fr" }]
 description = "A lightweight image processing library"
-readme = "README.md"
+readme = "README_PyPi.md"
 requires-python = ">=3.8"
 license = { text = "MIT License" }
 classifiers = [
