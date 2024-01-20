@@ -72,9 +72,17 @@ class BlendedImage:
         if images_crop is None:
             images_crop = [[0, 0, 0, 0] for i in range(len(images))]
 
+        self.__last_size = None
+
         if code is not None:
             if not isinstance(code, str):
                 raise TypeError("code must be str")
+            code = code.split("s")
+            self.__last_size = code[1].split(",")
+            self.__last_size = [
+                int(self.__last_size[i]) for i in range(len(self.__last_size) - 1)
+            ]
+            code = code[0]
             code = code.split("c")
             cropped = code[1].split(",")
             cropped = [int(cropped[i]) for i in range(len(cropped))]
@@ -162,6 +170,21 @@ class BlendedImage:
         self.__images_crop = images_crop
         self.__update_background_crop()
 
+        if self.__last_size is not None:
+            for k in range(len(positions)):
+                positions[k] = (
+                    int(
+                        positions[k][0]
+                        * self.__background_croped.shape[1]
+                        / self.__last_size[1]
+                    ),
+                    int(
+                        positions[k][1]
+                        * self.__background_croped.shape[0]
+                        / self.__last_size[0]
+                    ),
+                )
+
         self.__create_image()
         self.__update_code()
 
@@ -235,6 +258,10 @@ class BlendedImage:
                 + str(self.__images_crop[k])[1:-1].replace(" ", "")
             )
         self.__code += "c" + str(self.__cropped)[1:-1].replace(" ", "")
+        # shape with crop
+        theshape = self.__background_croped.shape
+        # theshape = self.__background.shape
+        self.__code += "s" + str(theshape)[1:-1].replace(" ", "")
 
     def __change_image_scale(self, change, k):
         """
@@ -296,7 +323,11 @@ class BlendedImage:
         #     mask[mask != 1] = 0
         #     mask = mask.astype(np.uint8)
 
-        if remove[0]:
+        isImage = True
+        if image.shape[0] == 0 or image.shape[1] == 0:
+            isImage = False
+
+        if remove[0] and isImage:
             color = remove[1]
             threshold = remove[2]
             lower = np.array(
@@ -316,7 +347,7 @@ class BlendedImage:
             :,
         ] * (1 - opacity)
 
-        if remove[0]:
+        if remove[0] and isImage:
             # if pixel in mask, then pixel comes form background, else from image
             image[mask == 1] = background[
                 position[1] : position[1] + image.shape[0],
@@ -348,6 +379,17 @@ class BlendedImage:
                 the_back.height - self.__cropped[2],
             )
         )
+        # changing the background to white
+        the_back = np.array(the_back)
+        # left side
+        the_back[:, : -self.__cropped[3], :] = [255, 255, 255]
+        # right side
+        the_back[:, the_back.shape[1] + self.__cropped[1] :, :] = [255, 255, 255]
+        # top side
+        the_back[: -self.__cropped[0], :, :] = [255, 255, 255]
+        # bottom side
+        the_back[the_back.shape[0] + self.__cropped[2] :, :, :] = [255, 255, 255]
+
         self.__background_croped = np.array(the_back)
 
     def __create_image(self):
@@ -453,12 +495,29 @@ class BlendedImage:
                     - image_crop[0]
                     - image_crop[2],
                 ]
-                rectangle_position = [
-                    int(
-                        i * self.__background_display_width / self.__background.shape[1]
-                    )
-                    for i in rectangle_position
-                ]
+                rectangle_position[0] = (
+                    rectangle_position[0]
+                    * self.__background_display_width
+                    / self.__background_croped.shape[1]
+                )
+                rectangle_position[1] = (
+                    rectangle_position[1]
+                    * self.__background_display_height
+                    / self.__background_croped.shape[0]
+                )
+                rectangle_position[2] = (
+                    rectangle_position[2]
+                    * self.__background_display_width
+                    / self.__background_croped.shape[1]
+                )
+                rectangle_position[3] = (
+                    rectangle_position[3]
+                    * self.__background_display_height
+                    / self.__background_croped.shape[0]
+                )
+
+                rectangle_position = [int(rectangle_position[i]) for i in range(4)]
+
                 background_to_display.astype(np.uint8)
                 background_to_display = cv2.rectangle(
                     background_to_display,
@@ -1020,7 +1079,7 @@ class BlendedImage:
         upload_new_image.filter_pattern = ["*.jpg", "*.png", "*.jpeg"]
 
         background_crop_right = widgets.BoundedIntText(
-            value=0,
+            value=-self.__cropped[1],
             min=-self.__background_croped.shape[1] + 10,
             max=self.__background_croped.shape[1],
             step=1,
@@ -1033,10 +1092,10 @@ class BlendedImage:
             layout=widgets.Layout(width="18%"),
         )
         background_crop_left = widgets.BoundedIntText(
-            value=0,
+            value=-self.__cropped[3],
             min=-self.__background_croped.shape[1] + 10,
             max=self.__background_croped.shape[1],
-            step=5,
+            step=1,
             description="Crop/expand left",
             disabled=False,
             continuous_update=True,
@@ -1046,10 +1105,10 @@ class BlendedImage:
             layout=widgets.Layout(width="18%"),
         )
         background_crop_top = widgets.BoundedIntText(
-            value=0,
+            value=-self.__cropped[0],
             min=-self.__background_croped.shape[0] + 10,
             max=self.__background_croped.shape[0],
-            step=5,
+            step=1,
             description="Crop/expand top",
             disabled=False,
             continuous_update=True,
@@ -1060,10 +1119,10 @@ class BlendedImage:
         )
 
         background_crop_bottom = widgets.BoundedIntText(
-            value=0,
+            value=-self.__cropped[2],
             min=-self.__background_croped.shape[0] + 10,
             max=self.__background_croped.shape[0],
-            step=5,
+            step=1,
             description="Crop/expand bottom",
             disabled=False,
             continuous_update=True,

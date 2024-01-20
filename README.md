@@ -168,8 +168,6 @@ I wonder if I (we?) should extend this project to create a Photoshop-like interf
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- CONTRIBUTING -->
 ## :family_man_woman_girl_boy: Contributing
 

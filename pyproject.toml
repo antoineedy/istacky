@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "istacky"
-version = "0.1"
+version = "0.1.0"
 authors = [{ name = "Antoine EDY", email = "antoineedy@outlook.fr" }]
 description = "A lightweight image processing library"
 readme = "README.md"
@@ -36,7 +36,6 @@ dependencies = [
     "ipython",
     "nbclient",
     "notebook",
-    "mkdocstrings-python",
 ]
 
 [project.urls]
