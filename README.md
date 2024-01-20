@@ -48,7 +48,7 @@ This project has been made to be used in the context of __machine learning__ and
 
 ## :technologist: Installation
 
-__using pip:__
+__using pip:__ _(recommended)_
 ```sh
 pip install istacky
 ```
@@ -71,13 +71,18 @@ pip install -e .
 <!-- USAGE EXAMPLES -->
 ## :mag_right: Usage
 
-Istacky is meant to be used in Jupyter Notebooks. Do not foregt to have a look at the [documentation](https://antoineedy.github.io/istacky) for more details!
+IStacky is meant to be used in Jupyter Notebooks. Do not forget to have a look at the [documentation](https://antoineedy.github.io/istacky) for more details!
 
-#### :video_camera: Tutorial (coming soon)
+_You can also access the a look at the [example notebook](https://github.com/antoineedy/istacky/blob/main/example.ipynb) for an example you can run at home._
+
+#### :video_camera: Video tutorial
+
+English version:
+<iframe width="560" height="315" src="https://www.youtube.com/embed/U3erapTSOeQ" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+Access the French version [here](https://www.youtube.com/watch?v=U3erapTSOeQ).
 
 #### :notebook: Example
-
-_Have a look at the [example notebook](https://github.com/antoineedy/istacky/blob/main/example.ipynb) for a complete example._
 
 In our example, we want to create an output image, with a tennis point in background, and some plots, a circle and a logo on top of it. We will first import the libraries needed:
 ```python
@@ -170,10 +175,7 @@ I wonder if I (we?) should extend this project to create a Photoshop-like interf
 <!-- CONTRIBUTING -->
 ## :family_man_woman_girl_boy: Contributing
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
 If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-Don't forget to give the project a star! Thanks again!
 
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
@@ -188,7 +190,7 @@ Don't forget to give the project a star! Thanks again!
 <!-- LICENSE -->
 ## :scroll: License
 
-Distributed under the MIT License. See `LICENSE.txt` for more information.
+Distributed under the MIT License. See [`LICENSE`](LICENSE) for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -197,7 +199,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## :dart: Contact
 
-My name is Antoine EDY. Here is my [LinkedIn](https://www.linkedin.com/in/antoineedy/) and my [Github](https://github.com/antoineedy) profiles, and you can send me an email to [antoineedy@outlook.fr](mailto:antoineedy@outlook.fr).
+My name is Antoine EDY. Here are my [LinkedIn](https://www.linkedin.com/in/antoineedy/) and my [Github](https://github.com/antoineedy) profiles, and you can send me an email to [antoineedy@outlook.fr](mailto:antoineedy@outlook.fr).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
