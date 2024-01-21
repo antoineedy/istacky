@@ -10,10 +10,11 @@ from copy import deepcopy
 from ipyfilechooser import FileChooser
 from IPython.display import display
 
-#Ignore warnings
+# Ignore warnings
 
 import warnings
-warnings.filterwarnings('ignore')
+
+warnings.filterwarnings("ignore")
 
 # Create the class
 
@@ -175,7 +176,9 @@ class BlendedImage:
         if self.__last_size is not None:
             for k in range(len(cropped)):
                 cropped[k] = int(
-                    cropped[k] * self.__background.shape[k % 2] / self.__last_size[k % 2]
+                    cropped[k]
+                    * self.__background.shape[k % 2]
+                    / self.__last_size[k % 2]
                 )
         self.__cropped = cropped
         self.__background_croped = None
@@ -280,9 +283,22 @@ class BlendedImage:
         Change the image scale.
         """
         self.__image_scales[k] = change
-        self.__image_heights[k] = (
-            self.__image_scales[k] * self.__background_croped.shape[0]
-        )
+
+        # option 1 : change the image height in comparison with the background CROPPED
+        # pros: coherent with the crop
+        # cons: when cropping or expanding the background, the image scale changes :/
+
+        # self.__image_heights[k] = (
+        #    self.__image_scales[k] * self.__background_croped.shape[0]
+        # )
+
+        # ----------------
+        # option 2 : change the image height in comparison with the background NOT CROPPED
+        # pros: does not change when cropping or expanding the background
+        # cons: not coherent with the crop
+
+        self.__image_heights[k] = self.__image_scales[k] * self.__background.shape[0]
+
         self.__image_widths[k] = self.__images[k].shape[1] * (
             self.__image_heights[k] / self.__images[k].shape[0]
         )

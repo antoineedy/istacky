@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "istacky"
-version = "0.1.0"
+version = "0.1.1"
 authors = [{ name = "Antoine EDY", email = "antoineedy@outlook.fr" }]
 description = "A lightweight image processing library"
 readme = "README_PyPi.md"
