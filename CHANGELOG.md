@@ -1,4 +1,12 @@
-### 20/01/2024 (not released)
+### 21/01/2024 (not released, work in progress)
+---
+* Bug corrections:
+    * Cropping the background on the top or the left led to a wrong coloration of the rest of the images.
+
+* Changes:
+    * When cropping or extanding the background, the images' positions are now updated to stay in the same place on the background.
+
+### 20/01/2024 (v.0.1.1)
 ---
 * Bug corrections:
     * Background cropping in the `code`: the code generated from the editor mode was not working properly, as cropping the background would lead to some position issues on all of the layers.

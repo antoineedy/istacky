@@ -339,6 +339,9 @@ class BlendedImage:
             Superposed image.
         """
 
+        # BREAKS SOME STUFF
+        # position = (position[0] - self.__cropped[3], position[1] - self.__cropped[0])
+
         # image crop is in percent, put it in pixels
         image_crop = [int(image_crop[i] * image.shape[i % 2] / 100) for i in range(4)]
 
@@ -370,6 +373,9 @@ class BlendedImage:
         isImage = True
         if image.shape[0] == 0 or image.shape[1] == 0:
             isImage = False
+        isBackground = True
+        if background.shape[0] == 0 or background.shape[1] == 0:
+            isBackground = False
 
         if remove[0] and isImage:
             color = remove[1]
@@ -385,11 +391,12 @@ class BlendedImage:
             mask = cv2.cvtColor(mask, cv2.COLOR_GRAY2RGB)
             mask = np.array(mask) - 255
 
-        image = image * opacity + background[
-            position[1] : position[1] + image.shape[0],
-            position[0] : position[0] + image.shape[1],
-            :,
-        ] * (1 - opacity)
+        if isImage and isBackground:
+            image = image * opacity + background[
+                position[1] : position[1] + image.shape[0],
+                position[0] : position[0] + image.shape[1],
+                :,
+            ] * (1 - opacity)
 
         if remove[0] and isImage:
             # if pixel in mask, then pixel comes form background, else from image
@@ -426,11 +433,13 @@ class BlendedImage:
         # changing the background to white
         the_back = np.array(the_back)
         # left side
-        the_back[:, : -self.__cropped[3], :] = [255, 255, 255]
+        if self.__cropped[3] < 0:
+            the_back[:, : -self.__cropped[3], :] = [255, 255, 255]
         # right side
         the_back[:, the_back.shape[1] + self.__cropped[1] :, :] = [255, 255, 255]
         # top side
-        the_back[: -self.__cropped[0], :, :] = [255, 255, 255]
+        if self.__cropped[0] < 0:
+            the_back[: -self.__cropped[0], :, :] = [255, 255, 255]
         # bottom side
         the_back[the_back.shape[0] + self.__cropped[2] :, :, :] = [255, 255, 255]
 
@@ -655,6 +664,11 @@ class BlendedImage:
             )
             for k in range(len(self.__images)):
                 self.__x_slider[k].max = self.__background_croped.shape[1]
+                # to keep the image at the same place when cropping or expanding the background
+                # self.__x_slider[k].value = (
+                #    self.__x_slider[k].value + change["new"] - change["old"]
+                # )
+
         elif change["owner"].description == "Crop/expand top":
             self.__cropped[0] = -change["new"]
             self.__update_background_crop()
@@ -666,7 +680,20 @@ class BlendedImage:
                 )
             )
             for k in range(len(self.__images)):
-                self.__y_slider[k].max = self.__background_croped.shape[0]
+                # self.__y_slider[k].max = self.__background_croped.shape[0]
+                # to keep the image at the same place when cropping or expanding the background
+                self.__image_scale_slider[k].value = (
+                    self.__image_scale_slider[k].value
+                    * (
+                        self.__background_croped.shape[0]
+                        - change["new"]
+                        + change["old"]
+                    )
+                    / self.__background_croped.shape[0]
+                )
+                # self.__y_slider[k].value, self.__y_slider[k].max = (
+                #     self.__y_slider[k].value - change["new"] + change["old"]
+                # ), self.__background_croped.shape[0]
         elif change["owner"].description == "Crop/expand bottom":
             self.__cropped[2] = -change["new"]
             self.__update_background_crop()
@@ -1142,7 +1169,8 @@ class BlendedImage:
             step=1,
             description="Crop/expand left",
             disabled=False,
-            continuous_update=True,
+            # Too heavy otherwise
+            continuous_update=False,
             style={
                 "description_width": "initial",
             },
@@ -1155,7 +1183,8 @@ class BlendedImage:
             step=1,
             description="Crop/expand top",
             disabled=False,
-            continuous_update=True,
+            # Too heavy otherwise
+            continuous_update=False,
             style={
                 "description_width": "initial",
             },
