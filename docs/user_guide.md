@@ -2,12 +2,12 @@
 
 ## Installation
 
-#### Using pip
+#### Using pip: _(recommended)_
 ```sh
-pip install istacky # not working yet!
+pip install istacky
 ```
 
-#### Install and run from source code
+#### Install and run from source code:
 
 Clone the repo, create a virtual environment and then install using pip:
 ```sh
@@ -31,10 +31,9 @@ pip install -e .
 
 !!! quote ""
     === "English version"
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/U3erapTSOeQ?si=WQbar1MTokNdB-dT" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+    
 
     === "French version"
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/U3erapTSOeQ?si=WQbar1MTokNdB-dT" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 #### :notebook: Example
 

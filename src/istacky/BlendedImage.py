@@ -34,7 +34,13 @@ class BlendedImage:
         code=None,
     ):
         """
-        Blend images on a background.
+        The one and only object of this package! \n
+        Initiates the blended image, which is a superposition of images on a background.
+        The images can be moved, resized and cropped, their opacity can be changed, their background color can be removed.
+        The background can be cropped or expanded.
+        The layers can be interchanged \n
+        The blended image can be displayed in a Jupyter Notebook, saved as a PIL.Image.Image or a numpy.ndarray.
+        A code is generated to save the parameters of the blended image, and reproduce it later with different images.
 
         Parameters
         ----------
@@ -58,6 +64,15 @@ class BlendedImage:
             Crop the images.
         code : str or None
             Code to reproduce a previously created blended image.
+
+        Examples
+        --------
+        >>> from istacky import BlendedImage
+        >>> from PIL import Image
+        >>> background = Image.open("background.jpg")
+        >>> top_layer = Image.open("image1.jpg")
+        >>> bottom_layer = Image.open("image2.jpg")
+        >>> blended_image = BlendedImage(background, [top_layer, bottom_layer])
         """
         if not isinstance(images, list):
             images = [images]
@@ -216,6 +231,7 @@ class BlendedImage:
     def get_code(self):
         """
         Get the code to reproduce the blended image.
+        A code is generated to save the parameters of the blended image, and reproduce it later with different images.
 
         Returns
         -------
@@ -756,7 +772,7 @@ class BlendedImage:
 
     def editor(self):
         """
-        Create a widget to edit the blended image.
+        Displays the GUI, an interface made of widgets which can be displayed in a Jupyter Notebook.
 
         Returns
         -------
