@@ -17,17 +17,3 @@ This project has been made to be used in the context of __machine learning__ and
 
 ![Gif](https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/gif1.gif "Title")
 
----
-
-## The future
-
-I wonder if I (we?) should extend this project to create a Photoshop-like interface using the ipywidgets library. I really don't know any use to this project. Let me know if you have any ideas! See the [open issues](https://github.com/antoineedy/istacky/issues) for a full list of proposed features (and known issues).
-
----
-
-## Contact
-
-My name is Antoine EDY. Here is my [LinkedIn](https://www.linkedin.com/in/antoineedy/) and my [Github](https://github.com/antoineedy) profiles, and you can send me an email to [antoineedy@outlook.fr](mailto:antoineedy@outlook.fr).
-
- 
-
