@@ -16,7 +16,7 @@
 <h3 align="center">IStacky</h3>
 
   <p align="center">
-    A lightweight image processing library
+    A Python lightweight image processing library
     <br />
     <a href="https://antoineedy.github.io/istacky"><strong>Explore the docs »</strong></a>
     <br />
@@ -41,7 +41,7 @@
 
 </div>
 
-__IStacky__ is a __lightweight image processing library__ based on the [Ipywidgets](https://github.com/jupyter-widgets/ipywidgets) library and designed to be used in [Jupyter Notebooks](https://jupyter.org/). The main idea is to provide a __simple__ and __intuitive interface__ to __stack images__ and apply number of modifications to them, such as __cropping__, __resizing__ or __background removal__.
+__IStacky__ is a __Python lightweight image processing library__ based on the [ipywidgets](https://github.com/jupyter-widgets/ipywidgets) library and designed to be used in [Jupyter Notebooks](https://jupyter.org/). The main idea is to provide a __simple__ and __intuitive interface__ to __stack images__ and apply number of modifications to them, such as __cropping__, __resizing__ or __background removal__.
 
 This project has been made to be used in the context of __machine learning__ and __computer vision projects__, where the user needs to __quickly__ and __easily__ create output images that combines several images: plots, photos, logos etc.
 
@@ -73,14 +73,11 @@ pip install -e .
 <!-- USAGE EXAMPLES -->
 ## :mag_right: Usage
 
-IStacky is meant to be used in Jupyter Notebooks. Do not forget to have a look at the [documentation](https://antoineedy.github.io/istacky) for more details!
-
-_You can also access the a look at the [example notebook](https://github.com/antoineedy/istacky/blob/main/example.ipynb) for an example you can run at home._
+IStacky is meant to be used in Jupyter Notebooks. Do not forget to have a look at the [documentation](https://antoineedy.github.io/istacky) for more details! You can also access the a look at the [example notebook](https://github.com/antoineedy/istacky/blob/main/example.ipynb) for an example you can run at home.
 
 #### :video_camera: Video tutorial
 
 English version:
-<iframe width="560" height="315" src="https://www.youtube.com/embed/U3erapTSOeQ" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 Access the French version [here](https://www.youtube.com/watch?v=U3erapTSOeQ).
 
@@ -171,9 +168,7 @@ We can see that the modifications have been applied to the new images!
 <!-- ROADMAP -->
 ## :world_map: Future of the project
 
-I wonder if I (we?) should extend this project to create a Photoshop-like interface using the ipywidgets library. I really don't know any use to this project. Let me know if you have any ideas! See the [open issues](https://github.com/antoineedy/istacky/issues) for a full list of proposed features (and known issues). Either way, here are the features I want to implement soon:
-* The possibility to change the color of a given layer.
-* The possibility to add some text (on an existing layer? a new one?). Could be great to add a title to a plot, a legend, or even frame numbers on a video.
+I wonder if I (we?) should extend this project to create a Photoshop-like interface using the ipywidgets library. I really don't know any use to this project. Either way, __[click here to access the todo list](https://github.com/antoineedy/istacky/blob/main/TODO.md")__ which contains the list of things to do for the project, and let me know if you have any ideas!
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
