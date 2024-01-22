@@ -38,8 +38,8 @@ class BlendedImage:
         Initiates the blended image, which is a superposition of images on a background.
         The images can be moved, resized and cropped, their opacity can be changed, their background color can be removed.
         The background can be cropped or expanded.
-        The layers can be interchanged \n
-        The blended image can be displayed in a Jupyter Notebook, saved as a PIL.Image.Image or a numpy.ndarray.
+        The layers can be interchanged. \n
+        The blended image can be displayed in a Jupyter Notebook, saved as a `PIL.Image.Image` or a `numpy.ndarray`.
         A code is generated to save the parameters of the blended image, and reproduce it later with different images.
 
         Parameters
@@ -242,7 +242,7 @@ class BlendedImage:
 
     def to_image(self):
         """
-        Return the blended image as a PIL.Image.Image.
+        Return the blended image as a `PIL.Image.Image`.
 
         Returns
         -------
@@ -253,7 +253,7 @@ class BlendedImage:
 
     def to_array(self):
         """
-        Return the blended image as a numpy.ndarray.
+        Return the blended image as a `numpy.ndarray`.
 
         Returns
         -------

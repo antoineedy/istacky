@@ -23,9 +23,9 @@
     <br />
     <a href="https://github.com/antoineedy/istacky/blob/main/example.ipynb">View Example</a>
     ·
-    <a href="https://github.com/gantoineedy/istacky/issues">Report Bug</a>
+    <a href="https://github.com/antoineedy/istacky/blob/main/CHANGELOG.md">View Changelog</a>
     ·
-    <a href="https://github.com/antoineedy/istacky/issues">Request Feature</a>
+    <a href="https://github.com/antoineedy/istacky/blob/main/TODO.md">View Todo List</a>
   </p>
 </div>
 
@@ -169,7 +169,9 @@ We can see that the modifications have been applied to the new images!
 <!-- ROADMAP -->
 ## :world_map: Future of the project
 
-I wonder if I (we?) should extend this project to create a Photoshop-like interface using the ipywidgets library. I really don't know any use to this project. Let me know if you have any ideas! See the [open issues](https://github.com/antoineedy/istacky/issues) for a full list of proposed features (and known issues).
+I wonder if I (we?) should extend this project to create a Photoshop-like interface using the ipywidgets library. I really don't know any use to this project. Let me know if you have any ideas! See the [open issues](https://github.com/antoineedy/istacky/issues) for a full list of proposed features (and known issues). Either way, here are the features I want to implement soon:
+* The possibility to change the color of a given layer.
+* The possibility to add some text (on an existing layer? a new one?). Could be great to add a title to a plot, a legend, or even frame numbers on a video.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -179,9 +181,9 @@ I wonder if I (we?) should extend this project to create a Photoshop-like interf
 If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
 
 1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
+2. Create your Feature Branch (`git checkout -b feature/MyFeature`)
+3. Commit your Changes (`git commit -m 'Would be great!'`)
+4. Push to the Branch (`git push origin feature/MyFeature`)
 5. Open a Pull Request
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
