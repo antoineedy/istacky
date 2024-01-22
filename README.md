@@ -21,11 +21,13 @@
     <a href="https://antoineedy.github.io/istacky"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/antoineedy/istacky/blob/main/example.ipynb">View Example</a>
+    <a href="https://github.com/antoineedy/istacky/blob/main/example.ipynb">Example</a>
     ·
-    <a href="https://github.com/antoineedy/istacky/blob/main/CHANGELOG.md">View Changelog</a>
+    <a href="https://github.com/antoineedy/istacky/blob/main/CHANGELOG.md">Changelog</a>
     ·
-    <a href="https://github.com/antoineedy/istacky/blob/main/TODO.md">View Todo List</a>
+    <a href="https://github.com/antoineedy/istacky/blob/main/TODO.md">Todo List</a>
+    .
+    <a href="https://pypi.org/project/istacky/">PyPi</a>
   </p>
 </div>
 
