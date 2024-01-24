@@ -1,5 +1,9 @@
-# Do the necessary imports
+# Hi developers!
+# This is the code of the package istacky.
+# If you want to contribute to the package, you can do so by forking the repository on GitHub.
+# Cheers!
 
+# Do the necessary imports
 from PIL import Image, ImageColor
 import numpy as np
 import ipywidgets as widgets
@@ -11,27 +15,25 @@ from ipyfilechooser import FileChooser
 from IPython.display import display
 
 # Ignore warnings
-
 import warnings
 
 warnings.filterwarnings("ignore")
 
-# Create the class
 
-
+# Create the one and only class of the package
 class BlendedImage:
     def __init__(
         self,
-        background: Image.Image or np.array,
-        images,
-        positions=None,
-        opacities=None,
-        background_resize=None,
-        image_scales=None,
-        remove=None,
-        cropped=None,
-        images_crop=None,
-        code=None,
+        background: Image.Image | np.array,
+        images: list | Image.Image | np.array,
+        positions: list = None,
+        opacities: list = None,
+        background_resize: list = None,
+        image_scales: list = None,
+        remove: list = None,
+        cropped: list = None,
+        images_crop: list = None,
+        code: str = None,
     ):
         """
         The one and only object of this package! \n
@@ -48,13 +50,13 @@ class BlendedImage:
             Background image.
         images : PIL.Image.Image or numpy.ndarray or list
             Image to superpose.
-        positions : tuple or list or None
+        positions : list or None
             Position of the image on the background.
-        opacities : float or list or None
+        opacities : list or None
             Opacity of the image.
-        background_resize : float
+        background_resize : list or None
             Coefficient to resize the background.
-        image_scales : float or list or None
+        image_scales : list or None
             Height of the images in percentage of the background height.
         remove : list or None
             Remove specific color from the image.
@@ -74,9 +76,14 @@ class BlendedImage:
         >>> bottom_layer = Image.open("image2.jpg")
         >>> blended_image = BlendedImage(background, [top_layer, bottom_layer])
         """
+
+        # make sure that the inputs are correct
+        # everything must be a list, except for the background
         if not isinstance(images, list):
             images = [images]
 
+        # we instaciate the positions, opacities, image_scales, remove, to_show, cropped and images_crop lists
+        # if they are None, we give them default values for each image
         if positions is None:
             positions = [(0, 0)] * len(images)
         elif not isinstance(positions, list):
@@ -93,8 +100,10 @@ class BlendedImage:
         if images_crop is None:
             images_crop = [[0, 0, 0, 0] for i in range(len(images))]
 
+        # last_size is used to keep the size of the background used to generate the code (if there is a code!)
         self.__last_size = None
 
+        # if there is a code, we use it to instaciate the parameters
         if code is not None:
             if not isinstance(code, str):
                 raise TypeError("code must be str")
@@ -142,6 +151,8 @@ class BlendedImage:
         self.__background = background
         self.__images = images
 
+        # we convert the backgroudn and the images to numpy arrays (easier to work with)
+        # we will convert them back to PIL.Image.Image when we need to do some stuff, such as displaying the image or using the cv2 library
         if isinstance(background, Image.Image):
             background = background.convert("RGB")
             self.__background = np.array(background)
@@ -150,6 +161,7 @@ class BlendedImage:
                 "self.__background must be PIL.Image.Image or numpy.ndarray"
             )
 
+        # we will convert the images to RGB before putting them in the list
         stored_images = []
 
         for image in images:
@@ -159,21 +171,26 @@ class BlendedImage:
             elif not isinstance(image, np.array):
                 raise TypeError("image must be PIL.Image.Image or numpy.ndarray")
 
-        self.__images = stored_images
+        # then we define all the parameters locally, so that we can use them in the functions
+        self.__images = stored_images  # list of numpy arrays
+        self.__positions = positions  # list of tuples
+        self.__opacities = opacities  # list of floats
+        self.__background_resize = background_resize  # float
+        self.__image_scales = image_scales  # list of floats
+        self.__remove = deepcopy(
+            remove
+        )  # list of lists of the form [True or False, Color, Threshold]
+        self.__to_show = to_show  # list of booleans
 
-        self.__positions = positions
-        self.__opacities = opacities
-        self.__background_resize = background_resize
-        self.__image_scales = image_scales
-        # remove = [True or False, Color, Threshold]
-        self.__remove = deepcopy(remove)
-        self.__to_show = to_show
+        # we define the size of the background TO DISPLAY only. The image itself is not resized, but for display purposes, we resize it.
+        # because everyone has different screen sizes, it is better to let the user choose the size of the background to display.
         self.__background_display_height = 350
         self.__background_display_width = int(
             self.__background_display_height
             * (self.__background.shape[1] / self.__background.shape[0])
         )
 
+        # we define the heights and widths of the images (in pixels). Very useful to store them somewhere.
         self.__image_heights = list(
             np.array(self.__image_scales) * self.__background.shape[0]
         )
@@ -184,10 +201,10 @@ class BlendedImage:
             self.__image_widths.append(height)
             k += 1
 
+        # this variable is for deciding if the user wants to visualize which layer is selected (red rectangle around the image)
         self.__visualize_layer = False
 
-        # change crop to match the new size of the image
-
+        # change crop to match the new size of the image is a code is used
         if self.__last_size is not None:
             for k in range(len(cropped)):
                 cropped[k] = int(
@@ -198,8 +215,11 @@ class BlendedImage:
         self.__cropped = cropped
         self.__background_croped = None
         self.__images_crop = images_crop
+
+        # this function will crop the background
         self.__update_background_crop()
 
+        # if the last backgound used to generate the code is not the same size as the new one, we change a bucnh of stuff
         if self.__last_size is not None:
             for k in range(len(positions)):
                 positions[k] = (
@@ -215,8 +235,14 @@ class BlendedImage:
                     ),
                 )
 
+        # this function will create the blended image using all the parameters
         self.__create_image()
+
+        # this function will update the code to save the options
         self.__update_code()
+
+    # now we define all the functions that the user can use
+    # very direct to understand
 
     def show(self):
         """
@@ -263,9 +289,9 @@ class BlendedImage:
         return self.__result
 
     def __update_code(self):
-        """
-        Update the code.
-        """
+        # update the code to save the options
+        # will be called everytime the user changes something!
+
         self.__code = ""
         for k in range(len(self.__images)):
             self.__code += (
@@ -289,15 +315,12 @@ class BlendedImage:
                 + str(self.__images_crop[k])[1:-1].replace(" ", "")
             )
         self.__code += "c" + str(self.__cropped)[1:-1].replace(" ", "")
-        # shape with crop
         theshape = self.__background_croped.shape
-        # theshape = self.__background.shape
         self.__code += "s" + str(theshape)[1:-1].replace(" ", "")
 
     def __change_image_scale(self, change, k):
-        """
-        Change the image scale.
-        """
+        # change the image scale (image k)
+        # update the code as well (as always)
         self.__image_scales[k] = change
 
         # option 1 : change the image height in comparison with the background CROPPED
@@ -323,6 +346,7 @@ class BlendedImage:
     def __blend_arrays(self, background, image, opacity, remove, position, image_crop):
         """
         Blend two arrays with opacity.
+        HERE, ONLY TWO IMAGES!
 
         Parameters
         ----------
@@ -332,6 +356,12 @@ class BlendedImage:
             Image to superpose.
         opacity : float
             Opacity of the image.
+        remove : list
+            Remove specific color from the image.
+        position : tuple
+            Position of the image on the background.
+        image_crop : list
+            Crop the images.
 
         Returns
         -------
@@ -339,18 +369,17 @@ class BlendedImage:
             Superposed image.
         """
 
-        # BREAKS SOME STUFF
-        # position = (position[0] - self.__cropped[3], position[1] - self.__cropped[0])
-
-        # image crop is in percent, put it in pixels
+        # image crop is in percent, we need to put it in pixels
         image_crop = [int(image_crop[i] * image.shape[i % 2] / 100) for i in range(4)]
 
+        # crop crop
         image = image[
             image_crop[0] : image.shape[0] - image_crop[2],
             image_crop[3] : image.shape[1] - image_crop[1],
             :,
         ]
 
+        # if position is not in the background, we need to crop the image
         if position[0] < 0:
             image = image[:, -position[0] :, :]
             position = (0, position[1])
@@ -362,14 +391,10 @@ class BlendedImage:
         if position[1] + image.shape[0] > background.shape[0]:
             image = image[: background.shape[0] - position[1], :, :]
 
+        # defin the mask
         mask = np.zeros(background.shape)
 
-        # if remove[0]:
-        #     mask = image.copy()
-        #     mask[image > 240] = 1
-        #     mask[mask != 1] = 0
-        #     mask = mask.astype(np.uint8)
-
+        # isImage and isBackground are used to check if the image and the background are not empty
         isImage = True
         if image.shape[0] == 0 or image.shape[1] == 0:
             isImage = False
@@ -377,6 +402,10 @@ class BlendedImage:
         if background.shape[0] == 0 or background.shape[1] == 0:
             isBackground = False
 
+        # if the user wants to remove a color and the image is not empty, we remove the color
+        # we use the cv2 library to do so!
+        # https://docs.opencv.org/3.4/da/d97/tutorial_threshold_inRange.html
+        # https://docs.opencv.org/3.4/d0/d86/tutorial_py_image_arithmetics.html
         if remove[0] and isImage:
             color = remove[1]
             threshold = remove[2]
@@ -391,6 +420,7 @@ class BlendedImage:
             mask = cv2.cvtColor(mask, cv2.COLOR_GRAY2RGB)
             mask = np.array(mask) - 255
 
+        # if the image is not empty and the background is not empty, we blend the two with the opacity
         if isImage and isBackground:
             image = image * opacity + background[
                 position[1] : position[1] + image.shape[0],
@@ -398,16 +428,18 @@ class BlendedImage:
                 :,
             ] * (1 - opacity)
 
+        # apply the mask if the user wants to remove a color
         if remove[0] and isImage:
-            # if pixel in mask, then pixel comes form background, else from image
+            # if pixel in mask, then pixel comes from background, else from image
             image[mask == 1] = background[
                 position[1] : position[1] + image.shape[0],
                 position[0] : position[0] + image.shape[1],
                 :,
             ][mask == 1]
 
-        # out is image starting at position and background
+        # we keep the background
         out = background.copy()
+        # and we put the blended image on top of it
         out[
             position[1] : position[1] + image.shape[0],
             position[0] : position[0] + image.shape[1],
@@ -422,6 +454,9 @@ class BlendedImage:
         """
         the_back = self.__background.copy()
         the_back = Image.fromarray(the_back)
+
+        # us the crop function from PIL.Image.Image
+        # https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.Image.crop
         the_back = the_back.crop(
             (
                 self.__cropped[3],
@@ -432,14 +467,18 @@ class BlendedImage:
         )
         # changing the background to white
         the_back = np.array(the_back)
+
         # left side
         if self.__cropped[3] < 0:
             the_back[:, : -self.__cropped[3], :] = [255, 255, 255]
+
         # right side
         the_back[:, the_back.shape[1] + self.__cropped[1] :, :] = [255, 255, 255]
+
         # top side
         if self.__cropped[0] < 0:
             the_back[: -self.__cropped[0], :, :] = [255, 255, 255]
+
         # bottom side
         the_back[the_back.shape[0] + self.__cropped[2] :, :, :] = [255, 255, 255]
 
@@ -447,22 +486,7 @@ class BlendedImage:
 
     def __create_image(self):
         """
-        Superpose image on background at position with opacity.
-
-        Parameters
-        ----------
-        background : PIL.Image.Image or numpy.ndarray
-            Background image.
-        image : PIL.Image.Image or numpy.ndarray
-            Image to superpose.
-        position : tuple
-            Position of the image on the background.
-        opacity : float
-            Opacity of the image.
-        background_background_resize : float
-            Coefficient to resize the background.
-        image_height : float
-            Height of the image in percentage of the background height.
+        Superpose ALL the images on background at position with opacity.
 
         Returns
         -------
@@ -473,7 +497,7 @@ class BlendedImage:
         background = self.__background_croped.copy()
         images = self.__images.copy()
 
-        # resize self.__background_croped
+        # resize the background if the user wants to
         if self.__background_resize is not None:
             background = Image.fromarray(background)
             background = background.resize(
@@ -484,6 +508,8 @@ class BlendedImage:
             )
             background = np.array(self.__background_croped)
 
+        # we will resize the images to match the image scale using the Pillow library
+        # https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.Image.resize
         for k in range(len(images)):
             image = images[k]
             image = Image.fromarray(image)
@@ -493,7 +519,8 @@ class BlendedImage:
             image = np.array(image)
             images[k] = image
 
-        # blend the background part and the image
+        # blend the background part and ALL THE IMAGES
+        # we start from the last image, and we go to the first one, so we go from the back to the front!
         for k in range(len(self.__images))[::-1]:
             if not self.__to_show[k]:
                 continue
@@ -506,6 +533,7 @@ class BlendedImage:
                 self.__images_crop[k],
             )
 
+        # the background to display is the same as the background, but resized for display purposes in notebooks
         background_to_display = background.copy()
         background_to_display = Image.fromarray(background_to_display)
         background_to_display = background_to_display.convert("RGBA")
@@ -518,12 +546,13 @@ class BlendedImage:
         background_to_display = background_to_display.convert("RGB")
         background_to_display = np.array(background_to_display)
 
-        # check if exist
+        # check if self.__tab exists (so if the user is using the GUI)
         try:
             self.__tab
         except AttributeError:
             self.__tab = None
 
+        # if the user is using the GUI and wants to visualize the selected layer, we do so
         if self.__visualize_layer and self.__tab is not None:
             k = self.__tab.selected_index
             if k == len(self.__images):
@@ -584,9 +613,11 @@ class BlendedImage:
         self.__result_display = background_to_display
 
     def __update_image(self, change):
-        """
-        Update the image displayed.
-        """
+        # updates the image displayed.
+        # called everytime the user changes something!
+        # change is the change of the widget. The description of the widget is used to know what to change.
+        # we will change the parameters of the image, and then call the __create_image function to update the image.
+
         isResetButton = False
         isForwardButton = False
         isBackwardButton = False
@@ -720,6 +751,7 @@ class BlendedImage:
             self.__image_crop_right[i].value = 0
             self.__image_crop_top[i].value = 0
         elif isBackwardButton:
+            # we need to change the order of the images
             self.__backward_button[i].disabled = True
             self.__images.insert(i + 1, self.__images.pop(i))
             self.__positions.insert(i + 1, self.__positions.pop(i))
@@ -739,6 +771,7 @@ class BlendedImage:
             self.__tab.selected_index = i + 1
             self.__backward_button[i].disabled = False
         elif isForwardButton:
+            # we need to change the order of the images
             self.__forward_button[i].disabled = True
             self.__images.insert(i - 1, self.__images.pop(i))
             self.__positions.insert(i - 1, self.__positions.pop(i))
@@ -760,11 +793,14 @@ class BlendedImage:
 
         self.__update_code()
         self.__create_image()
+
+        # display the updated image
         self.__image_output.clear_output(wait=True)
         with self.__image_output:
             display(Image.fromarray(self.__result_display))
 
     def __swap_widgets(self, i, j):
+        # used to swap the widgets of two tabs!
         widgets_to_swap = [
             self.__x_slider,
             self.__y_slider,
@@ -783,6 +819,7 @@ class BlendedImage:
         ]
         to_change = ["value", "max", "min", "disabled"]
         for widget in widgets_to_swap:
+            # we swpa all the attributes of the widgets
             the_list = list(vars(widget[0])["_trait_values"])
             the_list = [
                 the_list[i] for i in range(len(the_list)) if the_list[i] in to_change
@@ -807,6 +844,7 @@ class BlendedImage:
             Widget to edit the blended image.
         """
 
+        # we create the tabs that will contain the widgets
         tab_contents = [f"Image {i}" for i in range(len(self.__images))]
         children = [widgets.Text(description=name) for name in tab_contents]
         titles = ["Image 1 (front)"]
@@ -819,33 +857,43 @@ class BlendedImage:
         )
 
         def change_of_tab(b):
+            # when the user changes tab, we update the image displayed
+            # only if the user wants to visualize the selected layer, otherwise it is useless
             self.__create_image()
             self.__image_output.clear_output(wait=True)
             with self.__image_output:
                 display(Image.fromarray(self.__result_display))
 
         self.__tab.observe(change_of_tab)
-        self.__x_slider = [None] * len(children)
-        self.__y_slider = [None] * len(children)
-        self.__remove_widget = [None] * len(children)
-        self.__opacity_slider = [None] * len(children)
-        self.__image_scale_slider = [None] * len(children)
-        self.__to_show_widget = [None] * len(children)
-        self.__remove_widget_threshold = [None] * len(children)
-        self.__image_crop_right = [None] * len(children)
-        self.__image_crop_left = [None] * len(children)
-        self.__image_crop_top = [None] * len(children)
-        self.__image_crop_bottom = [None] * len(children)
-        self.__reset_crop_button = [None] * len(children)
-        self.__forward_button = [None] * len(children)
-        self.__backward_button = [None] * len(children)
-        self.__remove_widget_check = [None] * len(children)
 
-        self.__to_display = [None] * len(children)
+        # we create the widgets
+        self.__x_slider = [None] * len(children)  # x position
+        self.__y_slider = [None] * len(children)  # y position
+        self.__remove_widget = [None] * len(children)  #  what color to remove
+        self.__opacity_slider = [None] * len(children)  # opacity
+        self.__image_scale_slider = [None] * len(children)  # image scale
+        self.__to_show_widget = [None] * len(children)  # show image or not
+        self.__remove_widget_threshold = [None] * len(
+            children
+        )  # threshold to remove color
+        self.__image_crop_right = [None] * len(children)  # crop right side of the image
+        self.__image_crop_left = [None] * len(children)  # crop left side of the image
+        self.__image_crop_top = [None] * len(children)  # crop top side of the image
+        self.__image_crop_bottom = [None] * len(
+            children
+        )  # crop bottom side of the image
+        self.__reset_crop_button = [None] * len(children)  # reset crop of the image
+        self.__forward_button = [None] * len(children)  # move image a layer up
+        self.__backward_button = [None] * len(children)  # move image a layer down
+        self.__remove_widget_check = [None] * len(children)  # remove color or not
 
-        self.__image_output = widgets.Output()
+        self.__to_display = [None] * len(children)  # the content of the tabs
+
+        self.__image_output = widgets.Output()  # the output to display the image
 
         def create_widgets():
+            # called one time to create the widgets
+            # called again if the user wants to upload a new image!
             for i in range(len(self.__images)):
                 self.__x_slider[i] = widgets.IntSlider(
                     value=self.__positions[i][0],
