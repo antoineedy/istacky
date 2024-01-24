@@ -771,7 +771,7 @@ class BlendedImage:
             self.__remove_widget_check,
             self.__opacity_slider,
             self.__image_scale_slider,
-            self.__to_show,
+            self.__to_show_widget,
             self.__remove_widget_threshold,
             self.__image_crop_right,
             self.__image_crop_left,
@@ -783,7 +783,7 @@ class BlendedImage:
         ]
         to_change = ["value", "max", "min", "disabled"]
         for widget in widgets_to_swap:
-            the_list = list(vars(widget[0])["_trait_values"]).copy()
+            the_list = list(vars(widget[0])["_trait_values"])
             the_list = [
                 the_list[i] for i in range(len(the_list)) if the_list[i] in to_change
             ]
@@ -830,7 +830,7 @@ class BlendedImage:
         self.__remove_widget = [None] * len(children)
         self.__opacity_slider = [None] * len(children)
         self.__image_scale_slider = [None] * len(children)
-        self.__to_show = [None] * len(children)
+        self.__to_show_widget = [None] * len(children)
         self.__remove_widget_threshold = [None] * len(children)
         self.__image_crop_right = [None] * len(children)
         self.__image_crop_left = [None] * len(children)
@@ -881,7 +881,7 @@ class BlendedImage:
                         height=str(self.__background_display_height) + "px"
                     ),
                 )
-                self.__to_show[i] = widgets.Checkbox(
+                self.__to_show_widget[i] = widgets.Checkbox(
                     value=True,
                     description="Show image",
                     disabled=False,
@@ -1029,7 +1029,7 @@ class BlendedImage:
                 self.__opacity_slider[i].rank = i
                 self.__remove_widget[i].rank = i
                 self.__image_scale_slider[i].rank = i
-                self.__to_show[i].rank = i
+                self.__to_show_widget[i].rank = i
                 remove_widget_color.rank = i
                 self.__remove_widget_threshold[i].rank = i
 
@@ -1053,7 +1053,7 @@ class BlendedImage:
                     self.__update_image, names="value"
                 )
                 self.__image_scale_slider[i].observe(self.__update_image, names="value")
-                self.__to_show[i].observe(self.__update_image, names="value")
+                self.__to_show_widget[i].observe(self.__update_image, names="value")
                 self.__remove_widget_threshold[i].observe(
                     self.__update_image, names="value"
                 )
@@ -1107,7 +1107,7 @@ class BlendedImage:
                             ],
                             layout=widgets.Layout(justify_content="center"),
                         ),
-                        self.__to_show[i],
+                        self.__to_show_widget[i],
                     ],
                     layout={"justify_content": "space-around", "width": "30%"},
                 )

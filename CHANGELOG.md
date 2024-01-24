@@ -2,9 +2,10 @@
 _To keep track of the changes made to the project, this changelog is updated (at least!) with each new release._
 
 ---
-#### 21/01/2024 (v.0.1.2)
+#### 24/01/2024 (v.0.1.2)
 * Bug corrections:
     * Cropping the background on the top or the left led to a wrong coloration of the rest of the images.
+    * Conflict in the code, where two variables had the same name (`to_show` and the widget associated), causing issues when interverting layers.
 
 ---
 #### 20/01/2024 (v.0.1.1)
