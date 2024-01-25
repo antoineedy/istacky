@@ -1021,7 +1021,6 @@ class BlendedImage:
                     icon="undo",
                     tooltip="Reset crop",
                 )
-                # checkbox
                 self.__remove_widget_check[i] = widgets.Checkbox(
                     value=deepcopy(self.__remove[i][0]),
                     description="Remove color",
@@ -1072,6 +1071,7 @@ class BlendedImage:
                     icon="arrow-right",
                 )
 
+                # the rank is used to know which widget corresponds to which layer!
                 self.__x_slider[i].rank = i
                 self.__y_slider[i].rank = i
                 self.__opacity_slider[i].rank = i
@@ -1080,7 +1080,6 @@ class BlendedImage:
                 self.__to_show_widget[i].rank = i
                 remove_widget_color.rank = i
                 self.__remove_widget_threshold[i].rank = i
-
                 self.__reset_crop_button[i].rank = i
                 self.__image_crop_right[i].rank = i
                 self.__image_crop_left[i].rank = i
@@ -1090,7 +1089,7 @@ class BlendedImage:
                 self.__backward_button[i].rank = i
                 self.__remove_widget_check[i].rank = i
 
-                # when slider changes
+                # when the user changes something, we call the __update_image function
                 self.__x_slider[i].observe(self.__update_image, names="value")
                 self.__y_slider[i].observe(self.__update_image, names="value")
                 self.__opacity_slider[i].observe(self.__update_image, names="value")
@@ -1108,12 +1107,24 @@ class BlendedImage:
                 self.__image_crop_top[i].observe(self.__update_image, names="value")
                 self.__image_crop_bottom[i].observe(self.__update_image, names="value")
                 self.__image_crop_left[i].observe(self.__update_image, names="value")
+
+                # same when buttons are clicked
                 self.__image_crop_right[i].observe(self.__update_image, names="value")
-
                 self.__reset_crop_button[i].on_click(self.__update_image)
-
                 self.__forward_button[i].on_click(self.__update_image)
                 self.__backward_button[i].on_click(self.__update_image)
+
+                # here we create the layout of the GUI
+
+                # layers | new image
+                # ----- tab selected -----
+                #      x  x  x
+                # y  |  image  | opacity
+                # y  |  image  | remove
+                # y  |  image  | image scale & more...
+                # ------------------------
+                # crop         | forward/backward
+                # copy code    | display size
 
                 top = self.__x_slider[i]
                 left = widgets.HBox([self.__y_slider[i], self.__image_output])
@@ -1167,6 +1178,7 @@ class BlendedImage:
 
         create_widgets()
 
+        # the top layer cannot be moved up, and the bottom layer cannot be moved down!
         self.__forward_button[0].disabled = True
         self.__backward_button[-1].disabled = True
 
@@ -1194,9 +1206,12 @@ class BlendedImage:
         )
         copy_button.on_click(to_clipboard)
 
+        # we are using the FileChooser object from ipyfilechooser
+        # https://github.com/crahan/ipyfilechooser
         upload_new_image = FileChooser()
         upload_new_image.filter_pattern = ["*.jpg", "*.png", "*.jpeg"]
 
+        # we define here the widgets to crop the background
         background_crop_right = widgets.BoundedIntText(
             value=-self.__cropped[1],
             min=-self.__background_croped.shape[1] + 10,
@@ -1238,7 +1253,6 @@ class BlendedImage:
             },
             layout=widgets.Layout(width="18%"),
         )
-
         background_crop_bottom = widgets.BoundedIntText(
             value=-self.__cropped[2],
             min=-self.__background_croped.shape[0] + 10,
@@ -1270,15 +1284,11 @@ class BlendedImage:
         background_crop_top.observe(self.__update_image, names="value")
         background_crop_bottom.observe(self.__update_image, names="value")
 
+        # we display the image!
         with self.__image_output:
             display(Image.fromarray(self.__result_display))
 
-        #    | x  x  x
-        # y  |  image  | opacity
-        # y  |  image  | remove
-        # y  |  image  | image scale
-        # code | copy button
-
+        # we define the tab where we can upload a new image from the computer!
         button_validate_upload = widgets.Button(description="Validate", disabled=True)
 
         part_upload_new_image = widgets.VBox(
@@ -1299,6 +1309,7 @@ class BlendedImage:
             new_image = new_image.convert("RGB")
             new_image = np.array(new_image)
 
+            # we update the paramters to add the new image
             self.__images.append(new_image)
             self.__positions.append((0, 0))
             self.__opacities.append(1)
@@ -1314,6 +1325,7 @@ class BlendedImage:
                 * (self.__image_heights[-1] / new_image.shape[0])
             )
 
+            # we create empty widgets that will be defined later, when calling `create_widgets()`
             self.__x_slider.append(None)
             self.__y_slider.append(None)
             self.__remove_widget.append(None)
@@ -1331,13 +1343,17 @@ class BlendedImage:
             self.__forward_button.append(None)
             self.__backward_button.append(None)
 
+            # here!
             create_widgets()
             self.__update_code()
             self.__create_image()
+
+            # little trick to update the image ;)
             b = widgets.Button()
             b.rank = len(self.__images) - 1
             self.__update_image(b)
 
+            # we redefine the tabs to add one for the new image!
             tab_contents = [f"Image {i}" for i in range(len(self.__images))]
             children = [widgets.Text(description=name) for name in tab_contents]
             titles = ["Image 1 (front)"]
@@ -1352,6 +1368,7 @@ class BlendedImage:
             self.__tab.set_title(len(self.__tab.children) - 1, "Upload new image")
             self.__final.children = [self.__tab] + list(self.__final.children)[1:]
 
+            # we redefine the buttons to move the images up and down, as a new image has been added!
             for k in range(len(self.__backward_button)):
                 self.__backward_button[k].disabled = False
                 self.__forward_button[k].disabled = False
@@ -1364,6 +1381,8 @@ class BlendedImage:
         self.__tab.children = list(self.__tab.children) + [part_upload_new_image]
         self.__tab.set_title(len(self.__tab.children) - 1, "Upload new image")
 
+        # here is the widget that allows the user to change the size of the image displayed
+        # again: it does not change the size of the image, only the size of the image displayed!
         image_display_size = widgets.IntSlider(
             value=self.__background_display_height,
             min=100,
@@ -1407,10 +1426,12 @@ class BlendedImage:
 
         image_display_size.observe(update_image_display_size, names="value")
 
+        # her eis the checkbox to visualize the current layer, or not
         visualize_layer_check = widgets.Checkbox(
             value=False, description="Visualize the current layer"
         )
 
+        # when the user changes the value of the checkbox, we update the image displayed
         def change_vis_value(change):
             """
             Change the value of __visualize_layer.
@@ -1430,6 +1451,7 @@ class BlendedImage:
 
         visualize_layer_check.observe(change_vis_value)
 
+        # here, we create the final layout with all the bricks we created before!
         code_part = widgets.HBox(
             [
                 copy_button,
@@ -1453,4 +1475,5 @@ class BlendedImage:
         bottom = widgets.VBox([background_part, code_part])
         self.__final = widgets.VBox([self.__tab, bottom])
 
+        # and... voilà!
         return self.__final
