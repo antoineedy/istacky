@@ -77,12 +77,13 @@ IStacky is meant to be used in Jupyter Notebooks. Do not forget to have a look a
 
 #### :video_camera: Video tutorial
 
-English version:
 <div align="center">
   <a href="https://www.youtube.com/watch?v=see3Uufp0Q4&t=3s"><img src="https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/yt_video.png" alt="IMAGE ALT TEXT" height="220"></a>
 </div>
-
-Access the French version [here](https://www.youtube.com/watch?v=z5O9oRozJD0).
+<div align="center">
+  <br>
+Access the French version <a href="https://www.youtube.com/watch?v=z5O9oRozJD0">here</a>.
+</div>
 
 #### :notebook: Example
 
