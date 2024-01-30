@@ -24,8 +24,8 @@ warnings.filterwarnings("ignore")
 class BlendedImage:
     def __init__(
         self,
-        background: Image.Image | np.array,
-        images: list | Image.Image | np.array,
+        background: "Image.Image | np.array",
+        images: "list | Image.Image | np.array",
         positions: list = None,
         opacities: list = None,
         background_resize: list = None,
@@ -1333,6 +1333,7 @@ class BlendedImage:
             self.__image_scale_slider.append(None)
             self.__to_show.append(None)
             self.__remove_widget_threshold.append(None)
+            self.__to_show_widget.append(None)
             self.__image_crop_right.append(None)
             self.__image_crop_left.append(None)
             self.__image_crop_top.append(None)
