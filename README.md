@@ -78,7 +78,8 @@ IStacky is meant to be used in Jupyter Notebooks. Do not forget to have a look a
 #### :video_camera: Video tutorial
 
 English version:
-<iframe width="560" height="315" src="https://www.youtube.com/embed/see3Uufp0Q4?si=o9d2GthbzOZ6X5Fo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+[![IStacky tutorial]([https://i.stack.imgur.com/q3ceS.png](https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/yt_video.png))](https://www.youtube.com/watch?v=see3Uufp0Q4&t=3s)
 
 Access the French version [here](https://www.youtube.com/watch?v=z5O9oRozJD0).
 
