@@ -85,6 +85,7 @@ IStacky is meant to be used in Jupyter Notebooks. Do not forget to have a look a
 Access the French version <a href="https://www.youtube.com/watch?v=z5O9oRozJD0">here</a>.
 </div>
 
+
 #### :notebook: Example
 
 In our example, we want to create an output image, with a tennis point in background, and some plots, a circle and a logo on top of it. We will first import the libraries needed:
