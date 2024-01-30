@@ -79,7 +79,7 @@ IStacky is meant to be used in Jupyter Notebooks. Do not forget to have a look a
 
 English version:
 
-[![IStacky tutorial]([https://i.stack.imgur.com/q3ceS.png](https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/yt_video.png))](https://www.youtube.com/watch?v=see3Uufp0Q4&t=3s)
+[![IStacky tutorial]([https://raw.githubusercontent.com/antoineedy/istacky/main/docs/img/yt_video.png])(https://www.youtube.com/watch?v=see3Uufp0Q4&t=3s)
 
 Access the French version [here](https://www.youtube.com/watch?v=z5O9oRozJD0).
 
