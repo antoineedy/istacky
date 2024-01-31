@@ -1,6 +1,9 @@
 # :chart_with_upwards_trend: Changelog
 _To keep track of the changes made to the project, this changelog is updated (at least!) with each new release._
 
+#### 21/01/2024 (v.0.2)
+Last realease before sharing the project! Mostly contains refactoring and notes for the developers.
+
 ---
 #### 24/01/2024 (v.0.1.2)
 * Bug corrections:

@@ -173,7 +173,7 @@ We can see that the modifications have been applied to the new images!
 <!-- ROADMAP -->
 ## :world_map: Future of the project
 
-I wonder if I (we?) should extend this project to create a Photoshop-like interface using the ipywidgets library. I really don't know any use to this project. Either way, __[click here to access the todo list](https://github.com/antoineedy/istacky/blob/main/TODO.md")__ which contains the list of things to do for the project, and let me know if you have any ideas!
+I wonder if I (we?) should extend this project to create a Photoshop-like interface using the ipywidgets library. I really don't know any use to this project. Either way, __[click here to access the todo list](https://github.com/antoineedy/istacky/blob/main/TODO.md)__ which contains the list of things to do for the project, and let me know if you have any ideas!
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
