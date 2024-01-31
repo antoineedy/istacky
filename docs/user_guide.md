@@ -29,8 +29,6 @@ pip install -e .
 
 #### :video_camera: Video tutorial
 
-Access the French version [here](https://www.youtube.com/watch?v=z5O9oRozJD0).
-
 !!! quote ""
     === "English version"
         <iframe width="560" height="315" src="https://www.youtube.com/embed/see3Uufp0Q4?si=o9d2GthbzOZ6X5Fo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
