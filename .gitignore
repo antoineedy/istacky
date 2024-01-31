@@ -10,3 +10,5 @@ etc
 docs/img/logo.psd
 README_PyPi.md
 versions_backup
+dist/
+versions_backup/
