@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![PyPI - Downloads](https://img.shields.io/pypi/dm/istacky?style=for-the-badge&color=purple) [![Stargazers][stars-shield]][stars-url] [![Issues][issues-shield]][issues-url] [![MIT License][license-shield]][license-url] [![LinkedIn][linkedin-shield]][linkedin-url]
+[![Downloads](https://static.pepy.tech/badge/istacky)](https://pepy.tech/project/istacky) [![Downloads](https://static.pepy.tech/badge/istacky/month)](https://pepy.tech/project/istacky) [![Downloads](https://static.pepy.tech/badge/istacky/week)](https://pepy.tech/project/istacky)
 
 </div>
 
